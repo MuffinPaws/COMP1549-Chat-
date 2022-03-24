@@ -4,7 +4,6 @@ import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
-import io.ktor.util.*
 import kotlinx.coroutines.*
 
 fun main() {
@@ -27,7 +26,7 @@ fun main() {
     println("Connection closed. Goodbye!")
 }
 
-suspend fun DefaultClientWebSocketSession.outputMessages() {
+suspend fun DefaultClientWebSocketSession.inputMessages() {
     try {
         for (message in incoming) {
             message as? Frame.Text ?: continue
@@ -38,7 +37,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
     }
 }
 
-suspend fun DefaultClientWebSocketSession.inputMessages() {
+suspend fun DefaultClientWebSocketSession.outputMessages() {
     while (true) {
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return
