@@ -12,9 +12,15 @@ fun main() {
     }
     runBlocking {
         client.webSocket(method = HttpMethod.Get, host = "127.0.0.1", port = 8080, path = "/chat") {
+            val messageOutputRoutine = launch { outputMessages() }
+            val userInputRoutine = launch { inputMessages() }
+
+            userInputRoutine.join() // Wait for completion; either "exit" or error
+            messageOutputRoutine.cancelAndJoin()
+
             while(true) {
                 val othersMessage = incoming.receive() as? Frame.Text ?: continue
-                println(othersMessage.readText())
+//                println(othersMessage.readText())
                 val myMessage = readLine()
                 if(myMessage != null) {
                     send(myMessage)
@@ -25,8 +31,8 @@ fun main() {
     client.close()
     println("Connection closed. Goodbye!")
 }
-
-suspend fun DefaultClientWebSocketSession.inputMessages() {
+// Double check this part
+suspend fun DefaultClientWebSocketSession.outputMessages() {
     try {
         for (message in incoming) {
             message as? Frame.Text ?: continue
@@ -37,7 +43,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     }
 }
 
-suspend fun DefaultClientWebSocketSession.outputMessages() {
+suspend fun DefaultClientWebSocketSession.inputMessages() {
     while (true) {
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return

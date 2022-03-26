@@ -17,6 +17,7 @@ fun Application.module() {
         webSocket("/chat") {
             println("Adding user!")
             val thisConnection = Connection(this)
+            println(thisConnection)
             connections += thisConnection
             try {
                 send("You are connected! There are ${connections.count()} users here.")

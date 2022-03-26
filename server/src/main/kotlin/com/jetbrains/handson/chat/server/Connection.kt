@@ -9,3 +9,9 @@ class Connection(val session: DefaultWebSocketSession) {
     }
     val name = "user${lastId.getAndIncrement()}"
 }
+
+/*
+ Note that we are using AtomicInteger as a thread-safe data structure for the counter.
+ ensures that two users will never receive the same ID for their username –
+ even when their two Connection objects are created simultaneously on separate threads.
+ */

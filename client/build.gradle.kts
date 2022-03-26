@@ -15,3 +15,8 @@ dependencies {
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
 }
+
+/*
+ktor-client-cio provides a client implementation of Ktor on top of coroutines ("Coroutine-based I/O").
+ktor-client-websockets is the counterpart to the ktor-websockets dependency on the server, and allows us to consume WebSockets from the client with the same API as the server.
+ */
