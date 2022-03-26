@@ -15,6 +15,7 @@ fun Application.module() {
     routing {
         // list of all clients
         val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+        //server listens on path /chat
         webSocket("/chat") {
             println("Adding user!")
             val thisConnection = Connection(this)
