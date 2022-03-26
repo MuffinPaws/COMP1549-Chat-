@@ -6,11 +6,15 @@ import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 
+//TODO parse args
 fun main() {
+    //use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
     }
+    //run blocking tread (nothing else at the same time) TODO check if comment correct
     runBlocking {
+        //create client websocket instance TODO add client init parameters
         client.webSocket(method = HttpMethod.Get, host = "127.0.0.1", port = 8080, path = "/chat") {
             while(true) {
                 val othersMessage = incoming.receive() as? Frame.Text ?: continue
