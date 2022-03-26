@@ -37,17 +37,22 @@ fun main() {
 
 suspend fun DefaultClientWebSocketSession.inputMessages() {
     try {
+        //for each incoming message
         for (message in incoming) {
+            //TODO change to any data type
             message as? Frame.Text ?: continue
             println(message.readText())
         }
     } catch (e: Exception) {
+        //log error
         println("Error while receiving: " + e.localizedMessage)
     }
 }
 
 suspend fun DefaultClientWebSocketSession.outputMessages() {
     while (true) {
+        //for each user input
+        //TODO change
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return
         try {
