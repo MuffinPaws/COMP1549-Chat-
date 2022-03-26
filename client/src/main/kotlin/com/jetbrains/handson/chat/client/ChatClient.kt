@@ -1,5 +1,6 @@
 package com.jetbrains.handson.chat.client
 
+import com.github.ajalt.clikt.core.CliktCommand
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
@@ -48,4 +49,12 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
             return
         }
     }
+}
+
+class OperatingParameters: CliktCommand(){
+
+    override fun run() {
+        TODO("Not yet implemented")
+    }
+
 }
