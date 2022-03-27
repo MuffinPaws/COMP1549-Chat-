@@ -76,7 +76,19 @@ class OperatingParameters : CliktCommand() {
     val clientPort: Int by option(help="Which port to use").int().prompt("What is the port you want to use")
 
     override fun run() {
-        TODO("Not yet implemented")
+        echo("Starting App")
+
+        echo("Verifying client info")
+        //TODO check if client IP is okay
+        //TODO check if client Port is okay
+
+        echo("Verifying server info")
+        //TODO check if server IP is okay
+        //TODO check if server Port is okay
+        //TODO check if server reachable
+
+        echo("generating your fingerprint")
+        //TODO generate client ID object
     }
 
 }
