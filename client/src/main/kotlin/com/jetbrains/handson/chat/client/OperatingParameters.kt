@@ -9,9 +9,9 @@ import java.net.InetAddress
 class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
     val serverIP: String by option(help = "The server's IP address ").prompt("What is the server's IP address")
-    val serverPort: Int by option(help="The server's port").int().prompt("What is the port at the server")
+    val serverPort: Int by option(help = "The server's port").int().prompt("What is the port at the server")
     val clientIP: String by option(help = "Which IP address to use").prompt("What is the IP address you want to use")
-    val clientPort: Int by option(help="Which port to use").int().prompt("What is the port you want to use")
+    val clientPort: Int by option(help = "Which port to use").int().prompt("What is the port you want to use")
 
     override fun run() {
         echo("Starting App")
@@ -29,15 +29,19 @@ class OperatingParameters : CliktCommand() {
         //TODO generate client ID object
     }
 
-    object VerifyIP{
+    object VerifyIP {
         //TODO  if needed add bogon check
         fun isNotValid(IP: String): Boolean {
-            val parsedIP: String= if (IP.contains(':')) {
+            val parsedIP: String = if (IP.contains(':')) {
                 InetAddress.getByName(IP).hostAddress.replaceFirst(":0", ":").replace(":0", "")
-            }else{
+            } else {
                 InetAddress.getByName(IP).hostAddress
             }
             return IP != parsedIP
         }
+    }
+
+    object VerifyPort {
+
     }
 }
