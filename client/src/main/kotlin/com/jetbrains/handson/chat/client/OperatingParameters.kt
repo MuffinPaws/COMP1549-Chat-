@@ -29,5 +29,6 @@ class OperatingParameters : CliktCommand() {
     }
     object verifyIP{
         //TODO add BOgon list
+        //TODO add REGEX
     }
 }
