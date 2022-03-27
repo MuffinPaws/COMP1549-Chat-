@@ -17,11 +17,11 @@ class OperatingParameters : CliktCommand() {
         echo("Starting App")
 
         echo("Verifying client info")
-        //TODO check if client IP is okay
+        if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")
         //TODO check if client Port is okay
 
         echo("Verifying server info")
-        //TODO check if server IP is okay
+        if (VerifyIP.isNotValid(serverIP)) echo("Warning the server's IP address may be Incorrect")
         //TODO check if server Port is okay
         //TODO check if server reachable
 
@@ -29,15 +29,15 @@ class OperatingParameters : CliktCommand() {
         //TODO generate client ID object
     }
 
-    object verifyIP{
-        //TODO add BOgon list
-        fun verify(IP: String): Boolean {
+    object VerifyIP{
+        //TODO  if needed add bogon check
+        fun isNotValid(IP: String): Boolean {
             val parsedIP: String= if (IP.contains(':')) {
                 InetAddress.getByName(IP).hostAddress.replaceFirst(":0", ":").replace(":0", "")
             }else{
                 InetAddress.getByName(IP).hostAddress
             }
-            return IP == parsedIP
+            return IP != parsedIP
         }
     }
 }
