@@ -1,6 +1,7 @@
 package com.jetbrains.handson.chat.client
 
 import com.github.ajalt.clikt.core.CliktCommand
+import com.github.ajalt.clikt.output.TermUi.echo
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.types.int
@@ -42,6 +43,13 @@ class OperatingParameters : CliktCommand() {
     }
 
     object VerifyPort {
+        const val PORT_MIN = 0
+        const val PORT_MAX = 65535
+        const val PORT_PRIVILEGE_MAX = 1023
 
+        fun isNotValid(port: Int): Boolean {
+            if (port <= PORT_PRIVILEGE_MAX) echo("Warning port may be privileged")
+            return port !in PORT_MIN..PORT_MAX
+        }
     }
 }
