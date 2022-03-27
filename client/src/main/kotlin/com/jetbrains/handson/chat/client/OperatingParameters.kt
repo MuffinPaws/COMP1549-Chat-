@@ -19,11 +19,11 @@ class OperatingParameters : CliktCommand() {
 
         echo("Verifying client info")
         if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")
-        //TODO check if client Port is okay
+        if (VerifyPort.isNotValid(clientPort)) echo("Warning the port you want to use may be incorrect")
 
         echo("Verifying server info")
         if (VerifyIP.isNotValid(serverIP)) echo("Warning the server's IP address may be Incorrect")
-        //TODO check if server Port is okay
+        if (VerifyPort.isNotValid(serverPort)) echo("Warning the server's port you want to use may be incorrect")
         //TODO check if server reachable
 
         echo("generating your fingerprint")
@@ -43,9 +43,9 @@ class OperatingParameters : CliktCommand() {
     }
 
     object VerifyPort {
-        const val PORT_MIN = 0
-        const val PORT_MAX = 65535
-        const val PORT_PRIVILEGE_MAX = 1023
+        private const val PORT_MIN = 0
+        private const val PORT_MAX = 65535
+        private const val PORT_PRIVILEGE_MAX = 1023
 
         fun isNotValid(port: Int): Boolean {
             if (port <= PORT_PRIVILEGE_MAX) echo("Warning port may be privileged")
