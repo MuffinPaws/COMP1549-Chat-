@@ -20,8 +20,6 @@ fun Application.module() {
             connections += thisConnection
             try {
                 send("You are connected! There are ${connections.count()} users here.")
-//              // if there is only one user, that is the coordinator.
-                // if that guy goes out of the chat, then another member becomes coordinator.
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()

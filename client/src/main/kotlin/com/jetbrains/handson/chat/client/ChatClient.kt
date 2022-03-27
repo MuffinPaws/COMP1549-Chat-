@@ -6,39 +6,46 @@ import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 
+//TODO parse args
 fun main() {
+    //use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
     }
+    //run blocking tread/container/instance (nothing else at the same time) TODO check if comment correct
     runBlocking {
+        //create client websocket instance TODO add client init parameters
         client.webSocket(method = HttpMethod.Get, host = "127.0.0.1", port = 8080, path = "/chat") {
-            while(true) {
-                val othersMessage = incoming.receive() as? Frame.Text ?: continue
-                println(othersMessage.readText())
-                val myMessage = readLine()
-                if(myMessage != null) {
-                    send(myMessage)
-                }
-            }
+            val messageOutputRoutine = launch { outputMessages() }
+            val userInputRoutine = launch { inputMessages() }
+
+            userInputRoutine.join() // Wait for completion; either "exit" or error
+            messageOutputRoutine.cancelAndJoin()
         }
     }
+    //release system resources TODO try with resources
     client.close()
     println("Connection closed. Goodbye!")
 }
-
-suspend fun DefaultClientWebSocketSession.inputMessages() {
+// Double check this part
+suspend fun DefaultClientWebSocketSession.outputMessages() {
     try {
+        //for each incoming message
         for (message in incoming) {
+            //TODO change to any data type
             message as? Frame.Text ?: continue
             println(message.readText())
         }
     } catch (e: Exception) {
+        //log error
         println("Error while receiving: " + e.localizedMessage)
     }
 }
 
-suspend fun DefaultClientWebSocketSession.outputMessages() {
+suspend fun DefaultClientWebSocketSession.inputMessages() {
     while (true) {
+        //for each user input
+        //TODO change
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return
         try {
@@ -49,3 +56,5 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
         }
     }
 }
+
+
