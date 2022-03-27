@@ -28,6 +28,6 @@ class OperatingParameters : CliktCommand() {
         //TODO generate client ID object
     }
     object verifyIP{
-        //TODO add
+        //TODO add BOgon list
     }
 }
