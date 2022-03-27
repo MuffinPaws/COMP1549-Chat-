@@ -21,18 +21,6 @@ fun main() {
 
             userInputRoutine.join() // Wait for completion; either "exit" or error
             messageOutputRoutine.cancelAndJoin()
-
-            while(true) {
-                //parse incoming message
-                val othersMessage = incoming.receive() as? Frame.Text ?: continue
-                //print incoming message
-//                println(othersMessage.readText())
-                val myMessage = readLine()
-                //send message if not null
-                if(myMessage != null) {
-                    send(myMessage)
-                }
-            }
         }
     }
     //release system resources TODO try with resources
