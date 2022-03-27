@@ -4,6 +4,7 @@ import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.types.int
+import java.net.InetAddress
 
 class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
@@ -27,11 +28,16 @@ class OperatingParameters : CliktCommand() {
         echo("generating your fingerprint")
         //TODO generate client ID object
     }
+
     object verifyIP{
         //TODO add BOgon list
-        //TODO add REGEX
-        fun verify(IP: String) {
-
+        fun verify(IP: String): Boolean {
+            val parsedIP: String= if (IP.contains(':')) {
+                InetAddress.getByName(IP).hostAddress.replaceFirst(":0", ":").replace(":0", "")
+            }else{
+                InetAddress.getByName(IP).hostAddress
+            }
+            return IP == parsedIP
         }
     }
 }
