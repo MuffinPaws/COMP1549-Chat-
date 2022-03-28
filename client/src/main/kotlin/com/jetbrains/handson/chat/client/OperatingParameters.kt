@@ -7,6 +7,9 @@ import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.types.int
 import java.net.InetAddress
 import java.security.KeyPair
+import java.security.KeyPairGenerator
+import java.security.MessageDigest
+import java.util.*
 
 class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
@@ -17,11 +20,23 @@ class OperatingParameters : CliktCommand() {
     val ID:Pair<String,KeyPair>
 
     init {
+        val generator = KeyPairGenerator.getInstance("RSA")
+        generator.initialize(4096)
 
+        val getHash = MessageDigest.getInstance("SHA3-512")
+
+        val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
+
+        val keyPair = generator.generateKeyPair()
+        val fingerprint = toBase64URL(getHash.digest(keyPair.public.encoded))
+
+        ID = Pair(fingerprint, keyPair)
     }
 
     override fun run() {
         echo("Starting App") // TODO can this be moved out of here?
+        echo("generating your fingerprint")
+        echo("Your ID is ${ID.first}")
 
         echo("Verifying client info")
         if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")
@@ -31,9 +46,6 @@ class OperatingParameters : CliktCommand() {
         if (VerifyIP.isNotValid(serverIP)) echo("Warning the server's IP address may be Incorrect")
         if (VerifyPort.isNotValid(serverPort)) echo("Warning the server's port you want to use may be incorrect")
         //TODO check if server reachable
-
-        echo("generating your fingerprint")
-        //TODO generate client ID object
     }
 
     object VerifyIP {
