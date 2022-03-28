@@ -1,7 +1,7 @@
 package com.jetbrains.handson.chat.server
 
 import io.ktor.http.cio.websocket.*
-import java.util.concurrent.atomic.AtomicInteger
+import java.util.concurrent.atomic.*
 
 //Connection model
 class Connection(val session: DefaultWebSocketSession) {
@@ -11,7 +11,9 @@ class Connection(val session: DefaultWebSocketSession) {
         var lastId = AtomicInteger(0)
     }
     //client DATA
-    val name = "user${lastId.getAndIncrement()}"
+    var name = "user${lastId.getAndIncrement()}"
+    // by default no connection/member is coordinator (set to zero)
+    var coord = 0
 }
 
 /*
