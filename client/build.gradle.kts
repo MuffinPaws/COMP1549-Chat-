@@ -19,3 +19,8 @@ dependencies {
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
 }
+/*
+ktor-client-cio provides a client implementation of Ktor on top of coroutines ("Coroutine-based I/O").
+ktor-client-websockets is the counterpart to the ktor-websockets dependency on the server, and allows us to consume WebSockets from the client with the same API as the server.
+ */
+
