@@ -50,12 +50,18 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         //TODO change
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return
-        try {
-            // send what you typed
-            send(message)
-        } catch (e: Exception) {
-            println("Error while sending: " + e.localizedMessage)
-            return
+        // member can request existing members
+        if (message.equals("/members")) {
+            println("Returning existing members from server's set...")
+            send("/members")
+        } else {
+            try {
+                // send what you typed
+                send(message)
+            } catch (e: Exception) {
+                println("Error while sending: " + e.localizedMessage)
+                return
+            }
         }
     }
 }
