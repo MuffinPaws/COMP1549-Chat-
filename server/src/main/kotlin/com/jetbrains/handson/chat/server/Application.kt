@@ -6,14 +6,16 @@ import io.ktor.routing.*
 import io.ktor.websocket.*
 import java.util.*
 
-
+// args are collected from HODEL and passed to Netty server
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
 fun Application.module() {
+    // use KTOR websockets
     install(WebSockets)
+    // for all client connection create a KTOR thread
     routing {
-        // set of connections
+        // set of all client connections
         val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
         webSocket("/chat") {
             // add connection to set of connections
@@ -28,6 +30,7 @@ fun Application.module() {
                     thisConnection.name += "-COORD"
                     thisConnection.coord = 1
                 }
+                // when user connects log
                 println("Adding ${thisConnection.name}")
 
                 for (frame in incoming) {
@@ -51,12 +54,12 @@ fun Application.module() {
             } catch (e: Exception) {
                 println(e.localizedMessage)
             } finally {
+                // when client disconnects, log client leaving
                 println("Removing ${thisConnection.name}")
+                // TODO change to mark client as offline
+                // remove that client's connection from the connections hashset
                 connections -= thisConnection
             }
         }
     }
 }
-
-
-
