@@ -28,6 +28,7 @@ fun Application.module() {
                     thisConnection.name += "-COORD"
                     thisConnection.coord = 1
                 }
+                println("Adding ${thisConnection.name}")
 
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
