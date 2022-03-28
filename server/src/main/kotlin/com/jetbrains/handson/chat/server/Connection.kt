@@ -11,5 +11,13 @@ class Connection(val session: DefaultWebSocketSession) {
         var lastId = AtomicInteger(0)
     }
     //client DATA
-    val name = "user${lastId.getAndIncrement()}"
+    var name = "${lastId.getAndIncrement()}"
+    // by default no connection/member is coordinator (set to zero)
+    var coord = 0
 }
+
+/*
+ Note that we are using AtomicInteger as a thread-safe data structure for the counter.
+ ensures that two users will never receive the same ID for their username –
+ even when their two Connection objects are created simultaneously on separate threads.
+ */
