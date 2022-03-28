@@ -3,7 +3,9 @@ package com.jetbrains.handson.chat.client
 data class Message(val data:String){
     //List of all possible message type the app can receive
     enum class AplicationDataType{
-
+        TEXT,
+        FILE,
+        PING,
     }
 }
 
