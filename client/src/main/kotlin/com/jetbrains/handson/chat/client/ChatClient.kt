@@ -6,8 +6,10 @@ import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
 
-//TODO parse args
-fun main() {
+fun main(args: Array<String>) {
+    // Parse CLI Parameters
+    val operatingParameters = OperatingParameters().main(args)
+    // TODO use operatingParameters
     // use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
@@ -28,6 +30,7 @@ fun main() {
     client.close()
     println("Connection closed. Goodbye!")
 }
+
 // Double check this part
 suspend fun DefaultClientWebSocketSession.outputMessages() {
     try {
