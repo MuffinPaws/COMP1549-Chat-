@@ -46,9 +46,20 @@ fun Application.module() {
                     }
 
                     val receivedText = frame.readText()
-                    val textWithUsername = "[${thisConnection.name}]: $receivedText"
-                    connections.forEach {
-                        it.session.send(textWithUsername)
+                    // member requests the server to know the existing members
+                    var listOfExistingMembers = ""
+                    if (receivedText == "/members") {
+                        connections.forEach {
+                            listOfExistingMembers += "[name: ${it.name}, " +
+                                "coord: ${it.coord}, id: ciccio99, IP: 000, Port: 000]\n" }
+                        thisConnection.session.send(listOfExistingMembers)
+                        thisConnection.session.send("End of list!")
+                    } else {
+                        // text to be sent
+                        val textWithUsername = "[${thisConnection.name}]: $receivedText"
+                        connections.forEach {
+                            it.session.send(textWithUsername)
+                        }
                     }
                 }
             } catch (e: Exception) {
