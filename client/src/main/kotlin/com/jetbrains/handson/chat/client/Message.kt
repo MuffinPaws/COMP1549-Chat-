@@ -9,7 +9,10 @@ data class Message(val data:String){
 
         companion object{
             fun findDataType(name: String): AplicationDataType {
-
+                for (enum in values()){
+                    if (enum.name.equals(name, true)) return enum
+                }
+                return PING
             }
         }
     }
