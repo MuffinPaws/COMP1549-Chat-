@@ -6,6 +6,7 @@ import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.types.int
 import java.net.InetAddress
+import java.security.KeyPair
 
 class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
@@ -13,9 +14,14 @@ class OperatingParameters : CliktCommand() {
     val serverPort: Int by option(help = "The server's port").int().prompt("What is the port at the server")
     val clientIP: String by option(help = "Which IP address to use").prompt("What is the IP address you want to use")
     val clientPort: Int by option(help = "Which port to use").int().prompt("What is the port you want to use")
+    val ID:Pair<String,KeyPair>
+
+    init {
+
+    }
 
     override fun run() {
-        echo("Starting App")
+        echo("Starting App") // TODO can this be moved out of here?
 
         echo("Verifying client info")
         if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")
