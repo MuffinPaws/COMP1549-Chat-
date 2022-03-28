@@ -1,7 +1,7 @@
 package com.jetbrains.handson.chat.server
 
 import io.ktor.http.cio.websocket.*
-import java.util.concurrent.atomic.*
+import java.util.concurrent.atomic.AtomicInteger
 
 //Connection model
 class Connection(val session: DefaultWebSocketSession) {

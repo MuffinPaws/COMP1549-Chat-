@@ -8,6 +8,7 @@ import kotlinx.coroutines.*
 
 //TODO parse args
 fun main() {
+    // use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
     }
@@ -50,7 +51,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return
         try {
-            // send what you wrote
+            // send what you typed
             send(message)
         } catch (e: Exception) {
             println("Error while sending: " + e.localizedMessage)
@@ -58,5 +59,3 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         }
     }
 }
-
-
