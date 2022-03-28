@@ -11,7 +11,9 @@ class Connection(val session: DefaultWebSocketSession) {
         var lastId = AtomicInteger(0)
     }
     //client DATA
-    val name = "user${lastId.getAndIncrement()}"
+    var name = "user${lastId.getAndIncrement()}"
+    // by default no connection/member is coordinator (set to zero)
+    var coord = 0
 }
 
 /*
