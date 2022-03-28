@@ -15,6 +15,8 @@ data class Message(val data:String){
                 return PING
             }
         }
+
+        val json = """"""
     }
 
 
