@@ -35,7 +35,8 @@ fun Application.module() {
 
                     // if the COORD disconnects, then someone else has to take that role
                     var counter = 0
-                    connections.forEach { connection -> if (connection.coord == 1) {counter++}}
+                    val checkForCood = { connection: Connection -> if (connection.coord == 1) counter++ }
+                    connections.forEach(checkForCood)
                     if (counter == 0) {
                         connections.elementAt(0).coord = 1
                         connections.elementAt(0).name += "-COORD"
