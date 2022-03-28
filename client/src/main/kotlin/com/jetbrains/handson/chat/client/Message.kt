@@ -1,5 +1,8 @@
 package com.jetbrains.handson.chat.client
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class Message(val data:String){
     //List of all possible message type the app can receive
     enum class AplicationDataType{
