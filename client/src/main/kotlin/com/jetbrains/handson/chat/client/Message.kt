@@ -11,8 +11,30 @@ data class Message(val data:String){
 
 //TODO fix comment bellow
 // abstract class for providing a framework for storing T data
-open class messageBox<T>(data: T){
+abstract class MessageBox<T>(t: T){
+    val data = t
     open fun serialise(){
         TODO("The serialise function has not been created😒")
     }
+}
+
+class TextMessageBox(data: String):MessageBox<String>(data){
+    override fun serialise() {
+        TODO("Not yet implemented")
+    }
+
+}
+
+class FileMessageBox(data: String):MessageBox<String>(data){
+    override fun serialise() {
+        TODO("Not yet implemented")
+    }
+
+}
+
+class PingMessageBox(ID: Int):MessageBox<Int>(ID){
+    override fun serialise() {
+        TODO("Not yet implemented")
+    }
+
 }
