@@ -8,7 +8,7 @@ import kotlinx.coroutines.*
 
 //TODO parse args
 fun main() {
-    //use KTOR client web sockets
+    // use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
     }
@@ -16,31 +16,26 @@ fun main() {
     runBlocking {
         //create client websocket instance TODO add client init parameters
         client.webSocket(method = HttpMethod.Get, host = "127.0.0.1", port = 8080, path = "/chat") {
-            while(true) {
-                //parse incoming message
-                val othersMessage = incoming.receive() as? Frame.Text ?: continue
-                //print incoming message
-                println(othersMessage.readText())
-                //read user input
-                val myMessage = readLine()
-                //send message if not null
-                if(myMessage != null) {
-                    send(myMessage)
-                }
-            }
+
+            val messageOutputRoutine = launch { outputMessages() }
+            val userInputRoutine = launch { inputMessages() }
+
+            userInputRoutine.join() // Wait for completion; either "exit" or error
+            messageOutputRoutine.cancelAndJoin()
         }
     }
     //release system resources TODO try with resources
     client.close()
     println("Connection closed. Goodbye!")
 }
-
-suspend fun DefaultClientWebSocketSession.inputMessages() {
+// Double check this part
+suspend fun DefaultClientWebSocketSession.outputMessages() {
     try {
         //for each incoming message
         for (message in incoming) {
             //TODO change to any data type
             message as? Frame.Text ?: continue
+            // print message parsed from server
             println(message.readText())
         }
     } catch (e: Exception) {
@@ -49,13 +44,14 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     }
 }
 
-suspend fun DefaultClientWebSocketSession.outputMessages() {
+suspend fun DefaultClientWebSocketSession.inputMessages() {
     while (true) {
         //for each user input
         //TODO change
         val message = readLine() ?: ""
         if (message.equals("exit", true)) return
         try {
+            // send what you typed
             send(message)
         } catch (e: Exception) {
             println("Error while sending: " + e.localizedMessage)
@@ -63,5 +59,3 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
         }
     }
 }
-
-
