@@ -5,8 +5,16 @@ data class Message(val data:String){
     enum class AplicationDataType{
         TEXT,
         FILE,
-        PING,
+        PING,;
+
+        companion object{
+            fun findDataType(name: String): AplicationDataType {
+
+            }
+        }
     }
+
+
 }
 
 //TODO fix comment bellow
