@@ -26,6 +26,9 @@ abstract class MessageBox<T>(t: T) {
     open fun serialise() {
         TODO("The serialise function has not been created😒")
     }
+    open fun display() {
+        TODO("The display function has not been created😒")
+    }
 }
 
 class TextMessageBox(data: String) : MessageBox<String>(data) {
