@@ -51,7 +51,8 @@ fun Application.module() {
                     if (receivedText == "/members") {
                         connections.forEach {
                             listOfExistingMembers += "[name: ${it.name}, " +
-                                "coord: ${it.coord}, id: ciccio99, IP: 000, Port: 000]\n" }
+                                    "coord: ${it.coord}, id: ciccio99, IP: 000, Port: 000]\n"
+                        }
                         thisConnection.session.send(listOfExistingMembers)
                         thisConnection.session.send("End of list!")
                     } else {
