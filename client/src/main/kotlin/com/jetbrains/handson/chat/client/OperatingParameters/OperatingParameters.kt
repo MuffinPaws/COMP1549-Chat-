@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client
+package com.jetbrains.handson.chat.client.OperatingParameters
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.output.TermUi.echo
@@ -7,9 +7,6 @@ import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.types.int
 import java.net.InetAddress
 import java.security.KeyPair
-import java.security.KeyPairGenerator
-import java.security.MessageDigest
-import java.util.*
 
 class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
@@ -17,21 +14,9 @@ class OperatingParameters : CliktCommand() {
     val serverPort: Int by option(help = "The server's port").int().prompt("What is the port at the server")
     val clientIP: String by option(help = "Which IP address to use").prompt("What is the IP address you want to use")
     val clientPort: Int by option(help = "Which port to use").int().prompt("What is the port you want to use")
-    val ID:Pair<String,KeyPair>
 
-    init {
-        val generator = KeyPairGenerator.getInstance("RSA")
-        generator.initialize(4096)
-
-        val getHash = MessageDigest.getInstance("SHA3-512")
-
-        val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
-
-        val keyPair = generator.generateKeyPair()
-        val fingerprint = toBase64URL(getHash.digest(keyPair.public.encoded))
-
-        ID = Pair(fingerprint, keyPair)
-    }
+    @Deprecated("use the ID obj directly")
+    val ID: Pair<String, KeyPair> = IDFingerprintKeyPair.ID // TODO: deprecate
 
     override fun run() {
         echo("Starting App") // TODO can this be moved out of here?
