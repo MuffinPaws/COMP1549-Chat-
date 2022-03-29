@@ -50,6 +50,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
 }
 
 suspend fun DefaultClientWebSocketSession.inputMessages() {
+    send("client data")
     while (true) {
         //for each user input
         //TODO change
