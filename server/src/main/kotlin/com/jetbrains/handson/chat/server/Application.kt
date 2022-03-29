@@ -5,6 +5,7 @@ import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
 import java.util.*
+import kotlin.collections.LinkedHashSet
 
 // args are collected from HODEL and passed to Netty server
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -35,16 +36,6 @@ fun Application.module() {
 
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
-
-                    // if the COORD disconnects, then someone else has to take that role
-                    var counter = 0
-                    val checkForCood = { connection: Connection -> if (connection.coord == 1) counter++ }
-                    connections.forEach(checkForCood)
-                    if (counter == 0) {
-                        connections.elementAt(0).coord = 1
-                        connections.elementAt(0).name += "-COORD"
-                    }
-
                     val receivedText = frame.readText()
                     // member requests the server to know the existing members
                     var listOfExistingMembers = ""
@@ -68,10 +59,27 @@ fun Application.module() {
             } finally {
                 // when client disconnects, log client leaving
                 println("Removing ${thisConnection.name}")
-                // TODO change to mark client as offline
                 // remove that client's connection from the connections hashset
                 connections -= thisConnection
+                // if the COORD disconnects, then someone else has to take that role
+                setNewCoord(connections)
             }
         }
+    }
+}
+
+
+suspend fun setNewCoord(connections : MutableSet<Connection>) {
+    /*
+    Checks the presence of a coordinator in the connections set.
+    If there is not, sets that role to the first connection in the set.
+     */
+    var counter = 0
+    connections.forEach { connection: Connection -> if (connection.coord == 1) counter++ }
+    if (counter == 0) {
+        println("Setting ${connections.elementAt(0).name} as the new COORD...")
+        connections.elementAt(0).coord = 1
+        connections.forEach { it.session.send("${connections.elementAt(0).name} is the new coordinator!")}
+        connections.elementAt(0).name += "-COORD"
     }
 }
