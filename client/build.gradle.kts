@@ -15,6 +15,7 @@ dependencies {
     implementation("io.ktor:ktor-client-websockets:$ktor_version")
     implementation("io.ktor:ktor-client-cio:$ktor_version")
     implementation("com.github.ajalt.clikt:clikt:3.4.0")
+    implementation(kotlin("script-runtime"))
 
 }
 /*
