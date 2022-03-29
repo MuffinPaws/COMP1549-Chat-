@@ -4,13 +4,12 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class Message(val data: String, val type: AplicationDataType) {
-    fun display() = when(type){
+    fun display() = when (type) {
         AplicationDataType.TEXT -> TextMessageBox(data).display()
         AplicationDataType.FILE -> TODO()
         AplicationDataType.PING -> TODO()
     }
 }
-
 
 
 //List of all possible message type the app can receive

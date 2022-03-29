@@ -10,8 +10,10 @@ class Connection(val session: DefaultWebSocketSession) {
         //sequential unique ID generator TODO change to client finger print
         var lastId = AtomicInteger(0)
     }
+
     //client DATA
     var name = "${lastId.getAndIncrement()}"
+
     // by default no connection/member is coordinator (set to zero)
     var coord = 0
 }
