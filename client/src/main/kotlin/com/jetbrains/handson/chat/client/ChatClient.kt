@@ -11,7 +11,6 @@ fun main(args: Array<String>) {
     // Parse CLI Parameters
     val operatingParameters = OperatingParameters()
     operatingParameters.main(args)
-    // TODO use operatingParameters
     // use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
@@ -19,8 +18,13 @@ fun main(args: Array<String>) {
     //run blocking tread/container/instance (nothing else at the same time) TODO check if comment correct
     runBlocking {
         //create client websocket instance TODO add client init parameters
-        client.webSocket(method = HttpMethod.Get, host = operatingParameters.serverIP, port = 8080, path = "/chat") {
-
+        client.webSocket(
+            method = HttpMethod.Get,
+            host = operatingParameters.clientIP,
+            port = operatingParameters.clientPort,
+            path = "/chat"
+        )
+        {
             val messageOutputRoutine = launch { outputMessages() }
             val userInputRoutine = launch { inputMessages() }
 
