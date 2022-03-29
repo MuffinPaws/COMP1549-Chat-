@@ -15,13 +15,10 @@ class OperatingParameters : CliktCommand() {
     val clientIP: String by option(help = "Which IP address to use").prompt("What is the IP address you want to use")
     val clientPort: Int by option(help = "Which port to use").int().prompt("What is the port you want to use")
 
-    @Deprecated("use the ID obj directly")
-    val ID: Pair<String, KeyPair> = IDFingerprintKeyPair.ID // TODO: deprecate
-
     override fun run() {
         echo("Starting App") // TODO can this be moved out of here?
         echo("generating your fingerprint")
-        echo("Your ID is ${ID.first}")
+        echo("Your ID is ${IDFingerprintKeyPair.ID.first}")
 
         echo("Verifying client info")
         if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")
