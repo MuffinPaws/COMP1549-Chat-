@@ -45,7 +45,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
         }
     } catch (e: Exception) {
         //log error
-        println("Error while receiving: " + e.localizedMessage)
+        println("Info while receiving: " + e.localizedMessage)
     }
 }
 
