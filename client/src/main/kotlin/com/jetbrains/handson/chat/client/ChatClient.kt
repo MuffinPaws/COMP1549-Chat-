@@ -56,8 +56,11 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         //TODO change
         val message = readLine()
         if (message.isNullOrBlank()) continue
-        if (message.equals("exit", true)) return
-        if (message.equals("quit", true)) exitProcess(0)
+        if (message.equals("exit", true)) exitProcess(0)
+        if (message.equals("quit", true)) {
+            println("Connection closed. Goodbye!")
+            exitProcess(0)
+        }
         // member can request existing members
         if (message.equals("/members")) {
             println("Returning existing members from server's set...")
