@@ -19,7 +19,7 @@ fun main(args: Array<String>) {
     //run blocking tread/container/instance (nothing else at the same time) TODO check if comment correct
     runBlocking {
         //create client websocket instance TODO add client init parameters
-        client.webSocket(method = HttpMethod.Get, host = operatingParameters.serverIP, port = 8080, path = "/chat") {
+        client.webSocket(method = HttpMethod.Get, host = operatingParameters.serverIP, port = operatingParameters.serverPort, path = "/chat") {
 
             val messageOutputRoutine = launch { outputMessages() }
             val userInputRoutine = launch { inputMessages() }
