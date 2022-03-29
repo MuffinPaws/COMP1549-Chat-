@@ -16,6 +16,8 @@ class Connection(val session: DefaultWebSocketSession) {
 
     // by default no connection/member is coordinator (set to zero)
     var coord = 0
+
+    var ID = ""
 }
 
 /*
