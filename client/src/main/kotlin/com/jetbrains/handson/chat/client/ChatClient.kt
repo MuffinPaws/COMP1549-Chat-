@@ -1,5 +1,6 @@
 package com.jetbrains.handson.chat.client
 
+import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*

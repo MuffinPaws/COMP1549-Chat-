@@ -18,6 +18,8 @@ dependencies {
     implementation("com.github.ajalt.clikt:clikt:3.4.0")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.3.2")
     implementation("io.ktor:ktor-client-serialization:$ktor_version")
+    implementation(kotlin("script-runtime"))
+
 }
 /*
 ktor-client-cio provides a client implementation of Ktor on top of coroutines ("Coroutine-based I/O").
