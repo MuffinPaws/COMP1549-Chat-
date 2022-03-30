@@ -1,5 +1,6 @@
 package com.jetbrains.handson.chat.client
 
+import com.jetbrains.handson.chat.client.OperatingParameters.IDFingerprintKeyPair
 import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
@@ -11,7 +12,7 @@ fun main(args: Array<String>) {
     // Parse CLI Parameters
     val operatingParameters = OperatingParameters()
     operatingParameters.main(args)
-    // saving client info
+    // saving client info TODO change to config message
     val clientInfo = "NAME: ${operatingParameters.name}, " +
             "ID: ${IDFingerprintKeyPair.ID.first}," +
             "IP: ${operatingParameters.clientIP}, PORT:${operatingParameters.clientPort}"
@@ -21,11 +22,11 @@ fun main(args: Array<String>) {
     }
     //run blocking tread/container/instance (nothing else at the same time) TODO check if comment correct
     runBlocking {
-        //create client websocket instance TODO add client init parameters
+        //create client websocket instance
         client.webSocket(
             method = HttpMethod.Get,
-            host = operatingParameters.clientIP,
-            port = operatingParameters.clientPort,
+            host = operatingParameters.serverIP,
+            port = operatingParameters.serverPort,
             path = "/chat"
         )
         {
