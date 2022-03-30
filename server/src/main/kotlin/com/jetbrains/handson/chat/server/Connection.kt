@@ -5,7 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger
 
 //Connection model
 //TODO add val ID drop companion
-class Connection(val session: DefaultWebSocketSession) {
+class Connection(val session: DefaultWebSocketSession, val clientData: clientData) {
     //singleton instance shared by all connections
     companion object {
         //sequential unique ID generator TODO change to client finger print
@@ -18,7 +18,6 @@ class Connection(val session: DefaultWebSocketSession) {
     // by default no connection/member is coordinator (set to zero)
     var coord = 0
 
-    var ID = ""
 }
 
 /*
