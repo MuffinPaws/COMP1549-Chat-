@@ -23,6 +23,12 @@ data class Message(
     }
 }
 
+object Messagaes{
+    val messages = mutableMapOf<Message, Boolean>()
+
+    fun put(message: Message, read: Boolean = false): Boolean? = messages.put(message, read)
+}
+
 
 //List of all possible message type the app can receive
 enum class AplicationDataType {

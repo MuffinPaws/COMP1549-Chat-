@@ -54,7 +54,8 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
                 frame as? Frame.Text ?: continue
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
-                message.display()
+                Messagaes.put(message)
+                //message.display()
             } catch (e: Exception) {
                 println("Info while receiving: " + e.localizedMessage)
             }
