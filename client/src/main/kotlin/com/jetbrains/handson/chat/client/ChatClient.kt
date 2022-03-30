@@ -1,16 +1,22 @@
 package com.jetbrains.handson.chat.client
 
+import com.jetbrains.handson.chat.client.OperatingParameters.IDFingerprintKeyPair
 import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     // Parse CLI Parameters
     val operatingParameters = OperatingParameters()
     operatingParameters.main(args)
+    // saving client info
+    val clientInfo = "NAME: ${operatingParameters.name}, " +
+            "ID: ${IDFingerprintKeyPair.ID.first}," +
+            "IP: ${operatingParameters.clientIP}, PORT:${operatingParameters.clientPort}"
     // use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
@@ -20,12 +26,12 @@ fun main(args: Array<String>) {
         //create client websocket instance TODO add client init parameters
         client.webSocket(
             method = HttpMethod.Get,
-            host = operatingParameters.clientIP,
-            port = operatingParameters.clientPort,
+            host = operatingParameters.serverIP,
+            port = operatingParameters.serverPort,
             path = "/chat"
         )
         {
-            val messageOutputRoutine = launch { outputMessages() }
+            val messageOutputRoutine = launch { outputMessages(clientInfo) }
             val userInputRoutine = launch { inputMessages() }
 
             userInputRoutine.join() // Wait for completion; either "exit" or error
@@ -38,14 +44,21 @@ fun main(args: Array<String>) {
 }
 
 // Double check this part
-suspend fun DefaultClientWebSocketSession.outputMessages() {
+suspend fun DefaultClientWebSocketSession.outputMessages(clientInfo : String) {
     try {
         //for each incoming message
         for (message in incoming) {
             //TODO change to any data type
             message as? Frame.Text ?: continue
-            // print message parsed from server
-            println(message.readText())
+            // when advise of established connection arrives, send client info
+            // TODO add config type messages
+            if (message.readText() == "CONNECTION ESTABLISHED") {
+                send(clientInfo)
+            } else {
+                // print message parsed from server
+                println(message.readText())
+            }
+
         }
     } catch (e: Exception) {
         //log error
@@ -57,10 +70,15 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     while (true) {
         //for each user input
         //TODO change
-        val message = readLine() ?: ""
-        if (message.equals("exit", true)) return
+        val message = readLine()
+        if (message.isNullOrBlank()) continue
+        if (message.equals("exit", true)) exitProcess(0)
+        if (message.equals("quit", true)) {
+            println("Connection closed. Goodbye!")
+            exitProcess(0)
+        }
         // member can request existing members
-        if (message.equals("/members")) {
+        if (message == "/members") {
             println("Returning existing members from server's set...")
             send("/members")
         } else {
