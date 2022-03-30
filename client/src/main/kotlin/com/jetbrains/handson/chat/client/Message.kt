@@ -48,3 +48,7 @@ class FileMessageBox(data: String) : MessageBox<String>(data) {
 class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 
 }
+
+class ConfigMessgaeBox(data: String): MessageBox<String>(data){
+
+}
