@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
             messageOutputRoutine.cancelAndJoin()
         }
     }
-    //release system resources TODO try with resources
+    //release system resources
     client.close()
     println("Connection closed. Goodbye!")
 }

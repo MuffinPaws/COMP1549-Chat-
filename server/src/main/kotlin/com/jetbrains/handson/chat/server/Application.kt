@@ -6,6 +6,7 @@ import io.ktor.routing.*
 import io.ktor.websocket.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.encodeToString
 import java.time.Duration
 import java.util.*
 
@@ -28,13 +29,13 @@ fun Application.module() {
     routing {
         webSocket("/chat") {
             // add connection to set of connections
-            //TODO intercept incoming for init config message
             val clientData: clientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
             val thisConnection = Connection(this, clientData)
             connections += thisConnection
             // advise client of the just established connection
             thisConnection.session.send("CONNECTION ESTABLISHED")
-
+            send(Json.encodeToString(clientData.getAllClients().toList()))
+            println(Json.encodeToString(clientData.getAllClients().toList())) // TODO remove this
             try {
                 // when user connects log
                 println("Adding ${thisConnection.clientData.name}")
