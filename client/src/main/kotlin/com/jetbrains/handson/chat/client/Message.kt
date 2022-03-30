@@ -1,20 +1,22 @@
 package com.jetbrains.handson.chat.client
 
+import com.jetbrains.handson.chat.client.OperatingParameters.IDFingerprintKeyPair
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Message(val data: String, val type: AplicationDataType) {
+data class Message(val fromID: String = IDFingerprintKeyPair.ID.first, val toID:String, val data: String, val type: AplicationDataType) {
     fun display() = when (type) {
         AplicationDataType.TEXT -> TextMessageBox(data).display()
         AplicationDataType.FILE -> TODO()
         AplicationDataType.PING -> TODO()
+        AplicationDataType.CONFIG -> TODO()
     }
 }
 
 
 //List of all possible message type the app can receive
 enum class AplicationDataType {
-    TEXT, FILE, PING, ;
+    TEXT, FILE, PING, CONFIG;
 
     companion object {
         fun findDataType(name: String): AplicationDataType {
