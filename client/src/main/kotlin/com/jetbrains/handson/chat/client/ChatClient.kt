@@ -8,9 +8,9 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlin.system.exitProcess
 
 val operatingParameters = OperatingParameters()
@@ -26,10 +26,10 @@ fun main(args: Array<String>) {
     runBlocking {
         //create client websocket instance
         client.webSocket(
-                method = HttpMethod.Get,
-                host = operatingParameters.serverIP,
-                port = operatingParameters.serverPort,
-                path = "/chat"
+            method = HttpMethod.Get,
+            host = operatingParameters.serverIP,
+            port = operatingParameters.serverPort,
+            path = "/chat"
         )
         {
             val messageOutputRoutine = launch { outputMessages() }
@@ -54,7 +54,8 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
                 frame as? Frame.Text ?: continue
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
-                message.display()
+                Messagaes.put(message)
+                //message.display()
             } catch (e: Exception) {
                 println("Info while receiving: " + e.localizedMessage)
             }
@@ -73,26 +74,40 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     while (true) {
         //for each user input
         //TODO change
-        val message = readLine()
-        if (message.isNullOrBlank()) continue
-        if (message.equals("exit", true)) exitProcess(0)
-        if (message.equals("quit", true)) {
+        println(
+            """
+                Type 'exit' or 'quit' to close the program. 
+                type 'read' to read messages
+                type 'send' to type a new message (Press Enter to send it)
+                type 'history' to fetch messages history
+                type 'members' to list all members
+            """.trimIndent()
+        )
+        val exit = { x: String ->
+            println("${x}ting")
             println("Connection closed. Goodbye!")
             exitProcess(0)
         }
-        // member can request existing members
-        if (message.equals("/members")) {
-            println("Returning existing members from server's set...")
-            send("/members")
-        } else {
-            try {
-                // send what you typed
-                val messageP = Message(toID = "hdsfg", data = message, type = AplicationDataType.TEXT)
-                send(Json.encodeToString(messageP))
-            } catch (e: Exception) {
-                println("Error while sending: " + e.localizedMessage)
-                return
+        when (readln()) {
+            "exit" -> exit("Exi")
+            "quit" -> exit("Quit")
+            "members" -> continue // TODO implement
+            "send" -> print("Please type your massage: ")
+            else -> {
+                println("unknown command🥴")
+                continue
             }
+        }
+        val message = readln()
+        if (message.isBlank()) continue
+        // member can request existing members
+        try {
+            // send what you typed
+            val messageP = Message(toID = "hdsfg", data = message, type = AplicationDataType.TEXT)
+            send(Json.encodeToString(messageP))
+        } catch (e: Exception) {
+            println("Error while sending: " + e.localizedMessage)
+            return
         }
     }
 }
