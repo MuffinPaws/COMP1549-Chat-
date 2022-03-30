@@ -10,11 +10,12 @@ import kotlinx.coroutines.*
 
 fun main(args: Array<String>) {
     // Parse CLI Parameters
-    val op = OperatingParameters()
-    op.main(args)
+    val operatingParameters = OperatingParameters()
+    operatingParameters.main(args)
     // saving client info
-    val clientInfo = "NAME: ${op.name}, ID: ${IDFingerprintKeyPair.ID.first}," +
-            "IP: ${op.clientIP}, PORT:${op.clientPort}"
+    val clientInfo = "NAME: ${operatingParameters.name}, " +
+            "ID: ${IDFingerprintKeyPair.ID.first}," +
+            "IP: ${operatingParameters.clientIP}, PORT:${operatingParameters.clientPort}"
     // use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
@@ -24,8 +25,8 @@ fun main(args: Array<String>) {
         //create client websocket instance TODO add client init parameters
         client.webSocket(
             method = HttpMethod.Get,
-            host = op.clientIP,
-            port = op.clientPort,
+            host = operatingParameters.clientIP,
+            port = operatingParameters.clientPort,
             path = "/chat"
         )
         {
@@ -48,7 +49,8 @@ suspend fun DefaultClientWebSocketSession.outputMessages(clientInfo : String) {
         for (message in incoming) {
             //TODO change to any data type
             message as? Frame.Text ?: continue
-            // if advise of established connection arrives, send client info
+            // when advise of established connection arrives, send client info
+            // TODO add config type messages
             if (message.readText() == "CONNECTION ESTABLISHED") {
                 send(clientInfo)
             } else {

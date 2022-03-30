@@ -23,6 +23,7 @@ fun Application.module() {
             val thisConnection = Connection(this)
             connections += thisConnection
             // advise client of the just established connection
+            // TODO add config type messages
             thisConnection.session.send("CONNECTION ESTABLISHED")
             // get client info
             val clientInfo = (incoming.receive() as Frame.Text).readText().split(",")
