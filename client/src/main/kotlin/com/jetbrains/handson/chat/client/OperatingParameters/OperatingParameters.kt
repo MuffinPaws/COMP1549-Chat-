@@ -31,7 +31,7 @@ class OperatingParameters : CliktCommand() {
         if (VerifyPort.isNotValid(serverPort)) echo("Warning the server's port you want to use may be incorrect")
         //TODO check if server reachable
 
-        clientData = Json.encodeToString(clientData(name = name, IP = clientIP, port = clientPort))
+        clientData = Json.encodeToString(Client(name = name, IP = clientIP, port = clientPort))
     }
 
     object VerifyIP {
