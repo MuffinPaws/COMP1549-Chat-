@@ -36,7 +36,7 @@ fun main(args: Array<String>) {
             messageOutputRoutine.cancelAndJoin()
         }
     }
-    //release system resources TODO try with resources
+    //release system resources
     client.close()
     println("Connection closed. Goodbye!")
 }
@@ -48,6 +48,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
         for (message in incoming) {
             //TODO change to any data type
             message as? Frame.Text ?: continue
+
             // print message parsed from server
             println(message.readText())
 
