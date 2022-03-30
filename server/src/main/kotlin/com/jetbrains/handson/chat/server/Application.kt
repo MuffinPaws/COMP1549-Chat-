@@ -28,9 +28,9 @@ fun Application.module(testing: Boolean = false) {
     }
     // for all client connection create a KTOR thread
     routing {
-        get("/") {
-            call.respondText("Hello, world!")
-        }
+        // the following line is used to test the Application.module() with /chat route
+        get("/chat") { call.respondText("Hello, world!") }
+
         webSocket("/chat") {
             // add connection to set of connections
             val clientData: clientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
