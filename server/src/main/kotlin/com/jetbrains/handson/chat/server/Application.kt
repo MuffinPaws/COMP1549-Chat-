@@ -43,7 +43,7 @@ fun Application.module() {
                 // if only 1 user, that's the coordinator
                 if (connections.count() == 1) {
                     send("You are the coordinator my friend!")
-                    thisConnection.coord = 1
+                    thisConnection.isCoord=true
                 }
 
                 for (frame in incoming) {
@@ -54,7 +54,7 @@ fun Application.module() {
                         getExisistingMembers(connections, thisConnection)
                     } else {
                         // text to be sent to all members
-                        val sendersName = if (thisConnection.coord == 1) "${thisConnection.clientData.name}-COORD"
+                        val sendersName = if (thisConnection.isCoord) "${thisConnection.clientData.name}-COORD"
                         else thisConnection.clientData.name
                         val textWithUsername = "[${sendersName}]: $receivedText"
                         connections.forEach {
@@ -85,10 +85,10 @@ suspend fun setNewCoord() {
     If there is not, sets that role to the first connection in the set.
      */
     var counter = 0
-    connections.forEach { connection: Connection -> if (connection.coord == 1) counter++ }
+    connections.forEach { connection: Connection -> if (connection.isCoord) counter++ }
     if (counter == 0) {
         println("Setting ${connections.elementAt(0).clientData.name} as the new COORD...")
-        connections.elementAt(0).coord = 1
+        connections.elementAt(0).isCoord = true
         connections.forEach { it.session.send("${connections.elementAt(0).clientData.name} is the new coordinator!") }
     }
 }
@@ -102,7 +102,7 @@ suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnec
     var listOfExistingMembers = ""
     connections.forEach {
         listOfExistingMembers += "[name: ${it.clientData.name}, " +
-                "coord: ${it.coord}, id: ciccio99, IP: 000, Port: 000]\n"
+                "coord: ${it.isCoord}, id: ciccio99, IP: 000, Port: 000]\n"
     }
     println("Sending list of existing members to ${thisConnection.clientData.name}...")
     thisConnection.session.send(listOfExistingMembers)
