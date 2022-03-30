@@ -11,7 +11,10 @@ fun main(args: Array<String>) {
     // Parse CLI Parameters
     val operatingParameters = OperatingParameters()
     operatingParameters.main(args)
-    // TODO use operatingParameters
+    // saving client info
+    val clientInfo = "NAME: ${operatingParameters.name}, " +
+            "ID: ${IDFingerprintKeyPair.ID.first}," +
+            "IP: ${operatingParameters.clientIP}, PORT:${operatingParameters.clientPort}"
     // use KTOR client web sockets
     val client = HttpClient {
         install(WebSockets)
@@ -19,9 +22,14 @@ fun main(args: Array<String>) {
     //run blocking tread/container/instance (nothing else at the same time) TODO check if comment correct
     runBlocking {
         //create client websocket instance TODO add client init parameters
-        client.webSocket(method = HttpMethod.Get, host = operatingParameters.serverIP, port = operatingParameters.serverPort, path = "/chat") {
-
-            val messageOutputRoutine = launch { outputMessages() }
+        client.webSocket(
+            method = HttpMethod.Get,
+            host = operatingParameters.clientIP,
+            port = operatingParameters.clientPort,
+            path = "/chat"
+        )
+        {
+            val messageOutputRoutine = launch { outputMessages(clientInfo) }
             val userInputRoutine = launch { inputMessages() }
 
             userInputRoutine.join() // Wait for completion; either "exit" or error
@@ -34,14 +42,21 @@ fun main(args: Array<String>) {
 }
 
 // Double check this part
-suspend fun DefaultClientWebSocketSession.outputMessages() {
+suspend fun DefaultClientWebSocketSession.outputMessages(clientInfo : String) {
     try {
         //for each incoming message
         for (message in incoming) {
             //TODO change to any data type
             message as? Frame.Text ?: continue
-            // print message parsed from server
-            println(message.readText())
+            // when advise of established connection arrives, send client info
+            // TODO add config type messages
+            if (message.readText() == "CONNECTION ESTABLISHED") {
+                send(clientInfo)
+            } else {
+                // print message parsed from server
+                println(message.readText())
+            }
+
         }
     } catch (e: Exception) {
         //log error
