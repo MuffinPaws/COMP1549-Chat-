@@ -1,3 +1,3 @@
 # COMP1549-Chat-App
 
-COMP1549 Courswork Chat with KTOR
+COMP1549 Coursework Chat with KTOR
