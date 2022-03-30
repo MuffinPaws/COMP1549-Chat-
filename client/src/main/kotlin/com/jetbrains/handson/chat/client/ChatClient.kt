@@ -26,10 +26,10 @@ fun main(args: Array<String>) {
     runBlocking {
         //create client websocket instance
         client.webSocket(
-            method = HttpMethod.Get,
-            host = operatingParameters.serverIP,
-            port = operatingParameters.serverPort,
-            path = "/chat"
+                method = HttpMethod.Get,
+                host = operatingParameters.serverIP,
+                port = operatingParameters.serverPort,
+                path = "/chat"
         )
         {
             val messageOutputRoutine = launch { outputMessages() }
@@ -54,7 +54,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
                 frame as? Frame.Text ?: continue
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
-                Messagaes.put(message)
+                Messages.put(message)
                 //message.display()
             } catch (e: Exception) {
                 println("Info while receiving: " + e.localizedMessage)
@@ -74,7 +74,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         //for each user input
         //TODO change
         println(
-            """
+                """
                 Type 'exit' or 'quit' to close the program. 
                 type 'read' to read messages
                 type 'send' to type a new message (Press Enter to send it)
@@ -90,6 +90,8 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         when (readln()) {
             "exit" -> exit("Exi")
             "quit" -> exit("Quit")
+            "read" -> Messages.read()
+            "history" -> Messages.read(true)
             "members" -> continue // TODO implement
             "send" -> print("Please type your massage: ")
             else -> {
@@ -102,7 +104,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         // member can request existing members
         try {
             // send what you typed
-            val messageP = Message(toID = "hdsfg", data = message, type = AplicationDataType.TEXT)
+            val messageP = Message(toID = "hdsfg", data = message, type = ApplicationDataType.TEXT)
             send(Json.encodeToString(messageP))
         } catch (e: Exception) {
             println("Error while sending: " + e.localizedMessage)
