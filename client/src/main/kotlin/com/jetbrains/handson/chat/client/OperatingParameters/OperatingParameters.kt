@@ -5,19 +5,22 @@ import com.github.ajalt.clikt.output.TermUi.echo
 import com.github.ajalt.clikt.parameters.options.option
 import com.github.ajalt.clikt.parameters.options.prompt
 import com.github.ajalt.clikt.parameters.types.int
+import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.net.InetAddress
 
 class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
     val serverIP: String by option(help = "The server's IP address ").prompt("What is the server's IP address")
     val serverPort: Int by option(help = "The server's port").int().prompt("What is the port at the server")
-    val clientIP: String by option(help = "Which IP address to use").prompt("What is the IP address you want to use")
-    val clientPort: Int by option(help = "Which port to use").int().prompt("What is the port you want to use")
+    val clientIP: String by option(help = "Which IP address to share").prompt("What is the IP address you want to use")
+    val clientPort: Int by option(help = "Which port to share").int().prompt("What is the port you want to use")
+    var clientData: String = ""
 
     override fun run() {
         echo("Starting App") // TODO can this be moved out of here?
         echo("generating your fingerprint")
-        echo("Your ID is ${IDFingerprintKeyPair.ID.first}")
+        echo("Your ID is ${IDFingerprintKeyPair.fingerprint}")
 
         echo("Verifying client info")
         if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")
@@ -27,6 +30,8 @@ class OperatingParameters : CliktCommand() {
         if (VerifyIP.isNotValid(serverIP)) echo("Warning the server's IP address may be Incorrect")
         if (VerifyPort.isNotValid(serverPort)) echo("Warning the server's port you want to use may be incorrect")
         //TODO check if server reachable
+
+        clientData = Json.encodeToString(clientData(name = name, ID = IDFingerprintKeyPair.fingerprint, IP = clientIP, port = clientPort))
     }
 
     object VerifyIP {
