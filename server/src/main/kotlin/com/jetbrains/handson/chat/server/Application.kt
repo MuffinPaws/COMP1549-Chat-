@@ -29,13 +29,12 @@ fun Application.module() {
     routing {
         webSocket("/chat") {
             // add connection to set of connections
-            //TODO intercept incoming for init config message
             val clientData: clientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
             val thisConnection = Connection(this, clientData)
             connections += thisConnection
             // advise client of the just established connection
             thisConnection.session.send("CONNECTION ESTABLISHED")
-
+            println(Json.encodeToString(clientData.getAllClients().toList())) // TODO remove this
             try {
                 // when user connects log
                 println("Adding ${thisConnection.clientData.name}")
