@@ -4,7 +4,7 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class clientData(
+data class Client(
         val name: String,
         @EncodeDefault val ID: String = Identity.fingerprint,
         val IP: String,

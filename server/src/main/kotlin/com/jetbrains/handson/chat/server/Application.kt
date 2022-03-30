@@ -63,7 +63,7 @@ fun Application.module(testing: Boolean = false) {
                         else thisConnection.clientData.name
                         val textWithUsername = "[${sendersName}]: $receivedText"
                         connections.forEach {
-                            it.session.send(textWithUsername)
+                            it.session.send(receivedText)
                         }
                     }
                 }
