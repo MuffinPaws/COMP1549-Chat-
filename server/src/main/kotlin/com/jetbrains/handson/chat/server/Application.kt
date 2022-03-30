@@ -19,6 +19,7 @@ fun Application.module() {
         val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
         webSocket("/chat") {
             // add connection to set of connections
+            //TODO intercept incoming for init config message
             val thisConnection = Connection(this)
             connections += thisConnection
             try {

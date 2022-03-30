@@ -4,6 +4,7 @@ import io.ktor.http.cio.websocket.*
 import java.util.concurrent.atomic.AtomicInteger
 
 //Connection model
+//TODO add val ID drop companion
 class Connection(val session: DefaultWebSocketSession) {
     //singleton instance shared by all connections
     companion object {
