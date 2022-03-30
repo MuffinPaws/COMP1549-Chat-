@@ -8,6 +8,8 @@ import java.util.*
 // TODO better obj name?
 object IDFingerprintKeyPair {
     val ID: Pair<String, KeyPair>
+    val fingerprint: String
+    val key: KeyPair
 
     init {
         val generator = KeyPairGenerator.getInstance("RSA")
@@ -17,9 +19,9 @@ object IDFingerprintKeyPair {
 
         val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
 
-        val keyPair = generator.generateKeyPair()
-        val fingerprint = toBase64URL(getHash.digest(keyPair.public.encoded))
+        key = generator.generateKeyPair()
+        fingerprint = toBase64URL(getHash.digest(key.public.encoded))
 
-        ID = Pair(fingerprint, keyPair)
+        ID = Pair(fingerprint, key)
     }
 }
