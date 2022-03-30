@@ -34,6 +34,7 @@ fun Application.module() {
             connections += thisConnection
             // advise client of the just established connection
             thisConnection.session.send("CONNECTION ESTABLISHED")
+            send(Json.encodeToString(clientData.getAllClients().toList()))
             println(Json.encodeToString(clientData.getAllClients().toList())) // TODO remove this
             try {
                 // when user connects log
