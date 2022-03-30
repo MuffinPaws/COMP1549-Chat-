@@ -6,6 +6,7 @@ import io.ktor.client.features.websocket.*
 import io.ktor.http.*
 import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.*
+import kotlin.system.exitProcess
 
 fun main(args: Array<String>) {
     // Parse CLI Parameters
@@ -57,8 +58,13 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     while (true) {
         //for each user input
         //TODO change
-        val message = readLine() ?: ""
-        if (message.equals("exit", true)) return
+        val message = readLine()
+        if (message.isNullOrBlank()) continue
+        if (message.equals("exit", true)) exitProcess(0)
+        if (message.equals("quit", true)) {
+            println("Connection closed. Goodbye!")
+            exitProcess(0)
+        }
         // member can request existing members
         if (message.equals("/members")) {
             println("Returning existing members from server's set...")
