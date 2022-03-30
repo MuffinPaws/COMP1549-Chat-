@@ -1,10 +1,10 @@
 package com.jetbrains.handson.chat.client
 
-import com.jetbrains.handson.chat.client.OperatingParameters.IDFingerprintKeyPair
+import com.jetbrains.handson.chat.client.OperatingParameters.Identity
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Message(val fromID: String = IDFingerprintKeyPair.ID.first, val toID: String, val data: String, val type: AplicationDataType) {
+data class Message(val fromID: String = Identity.fingerprint, val toID: String, val data: String, val type: AplicationDataType) {
     fun display() = when (type) {
         AplicationDataType.TEXT -> TextMessageBox(data).display()
         AplicationDataType.FILE -> TODO()

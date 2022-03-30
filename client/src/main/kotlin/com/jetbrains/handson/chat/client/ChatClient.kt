@@ -48,6 +48,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
         for (message in incoming) {
             //TODO change to any data type
             message as? Frame.Text ?: continue
+
             // print message parsed from server
             println(message.readText())
 
