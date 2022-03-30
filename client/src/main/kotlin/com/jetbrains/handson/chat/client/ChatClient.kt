@@ -88,12 +88,12 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
             exitProcess(0)
         }
         when (readln()) {
-            "exit" -> exit("Exit")
+            "exit" -> exit("Exi")
             "quit" -> exit("Quit")
             "members" -> continue // TODO implement
             "send" -> print("Please type your massage: ")
             else -> {
-                println("unknown command")
+                println("unknown command🥴")
                 continue
             }
         }
