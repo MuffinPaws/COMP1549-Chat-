@@ -1,6 +1,7 @@
 package com.jetbrains.handson.chat.server
 
 import io.ktor.application.*
+import io.ktor.response.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
@@ -16,7 +17,7 @@ fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
 
 @Suppress("unused")
-fun Application.module() {
+fun Application.module(testing: Boolean = false) {
     // use KTOR websockets
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
@@ -26,6 +27,9 @@ fun Application.module() {
     }
     // for all client connection create a KTOR thread
     routing {
+        get("/") {
+            call.respondText("Hello, world!")
+        }
         webSocket("/chat") {
             // add connection to set of connections
             //TODO intercept incoming for init config message
@@ -43,7 +47,7 @@ fun Application.module() {
                 // if only 1 user, that's the coordinator
                 if (connections.count() == 1) {
                     send("You are the coordinator my friend!")
-                    thisConnection.isCoord=true
+                    thisConnection.isCoord = true
                 }
 
                 for (frame in incoming) {
@@ -51,7 +55,7 @@ fun Application.module() {
                     val receivedText = frame.readText()
                     // if received text is a /command run its own function, else send the text to all the members
                     if (receivedText == "/members") {
-                        getExisistingMembers(connections, thisConnection)
+                        getExistingMembers(thisConnection)
                     } else {
                         // text to be sent to all members
                         val sendersName = if (thisConnection.isCoord) "${thisConnection.clientData.name}-COORD"
@@ -94,7 +98,7 @@ suspend fun setNewCoord() {
 }
 
 
-suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnection: Connection) {
+suspend fun getExistingMembers(thisConnection: Connection) {
     /*
     This function checks if a member has requested the server (by using the /members command)
     to get the list of existing members.
