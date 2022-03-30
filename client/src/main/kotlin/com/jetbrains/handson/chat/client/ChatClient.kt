@@ -8,6 +8,8 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.serialization.json.Json
+import kotlinx.serialization.decodeFromString
 import kotlin.system.exitProcess
 
 val operatingParameters = OperatingParameters()
@@ -45,12 +47,12 @@ fun main(args: Array<String>) {
 suspend fun DefaultClientWebSocketSession.outputMessages() {
     try {
         //for each incoming message
-        for (message in incoming) {
+        for (frame in incoming) {
             //TODO change to any data type
-            message as? Frame.Text ?: continue
-
-            // print message parsed from server
-            println(message.readText())
+            frame as? Frame.Text ?: continue
+            val message = Json.decodeFromString<Message>(frame.readText())
+            // print frame parsed from server
+            message.display()
 
         }
     } catch (e: Exception) {

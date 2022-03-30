@@ -1,15 +1,25 @@
 package com.jetbrains.handson.chat.client
 
 import com.jetbrains.handson.chat.client.OperatingParameters.Identity
+import com.jetbrains.handson.chat.client.allClientsData.allClients
+import com.jetbrains.handson.chat.client.allClientsData.clientData
+import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
+import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.json.Json
 
 @Serializable
-data class Message(val fromID: String = Identity.fingerprint, val toID: String, val data: String, val type: AplicationDataType) {
+data class Message(
+    @EncodeDefault val fromID: String = Identity.fingerprint,
+    val toID: String,
+    val data: String,
+    val type: AplicationDataType,
+    @EncodeDefault val time: Long = System.currentTimeMillis()) {
     fun display() = when (type) {
         AplicationDataType.TEXT -> TextMessageBox(data).display()
-        AplicationDataType.FILE -> TODO()
-        AplicationDataType.PING -> TODO()
-        AplicationDataType.CONFIG -> TODO()
+        AplicationDataType.FILE -> println() //TODO impliment or remove
+        AplicationDataType.PING -> println()
+        AplicationDataType.CONFIG -> ConfigMessgaeBox(data).updateMemebers()
     }
 }
 
@@ -52,5 +62,9 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 }
 
 class ConfigMessgaeBox(data: String) : MessageBox<String>(data) {
-
+    fun updateMemebers(){
+        val newClientLis = Json.decodeFromString<List<clientData>>(data)
+        allClients.listOf.removeAll { x -> true }
+        allClients.listOf.addAll(newClientLis)
+    }
 }
