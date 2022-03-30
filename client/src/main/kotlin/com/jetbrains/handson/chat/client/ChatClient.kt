@@ -25,8 +25,8 @@ fun main(args: Array<String>) {
         //create client websocket instance TODO add client init parameters
         client.webSocket(
             method = HttpMethod.Get,
-            host = operatingParameters.clientIP,
-            port = operatingParameters.clientPort,
+            host = operatingParameters.serverIP,
+            port = operatingParameters.serverPort,
             path = "/chat"
         )
         {
