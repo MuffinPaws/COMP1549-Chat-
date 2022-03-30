@@ -1,7 +1,6 @@
 package com.jetbrains.handson.chat.server
 
 import io.ktor.http.cio.websocket.*
-import java.util.concurrent.atomic.AtomicInteger
 
 //Connection model
 //TODO add val ID drop companion

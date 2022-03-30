@@ -11,8 +11,10 @@ import java.util.*
 
 // args are collected from HOCON and passed to Netty server
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
+
 // set of all client connections
 val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+
 @Suppress("unused")
 fun Application.module() {
     // use KTOR websockets
@@ -53,7 +55,7 @@ fun Application.module() {
                     } else {
                         // text to be sent to all members
                         val sendersName = if (thisConnection.coord == 1) "${thisConnection.clientData.name}-COORD"
-                            else thisConnection.clientData.name
+                        else thisConnection.clientData.name
                         val textWithUsername = "[${sendersName}]: $receivedText"
                         connections.forEach {
                             it.session.send(textWithUsername)

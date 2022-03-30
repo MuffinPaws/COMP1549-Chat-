@@ -4,7 +4,7 @@ import com.jetbrains.handson.chat.client.OperatingParameters.IDFingerprintKeyPai
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class Message(val fromID: String = IDFingerprintKeyPair.ID.first, val toID:String, val data: String, val type: AplicationDataType) {
+data class Message(val fromID: String = IDFingerprintKeyPair.ID.first, val toID: String, val data: String, val type: AplicationDataType) {
     fun display() = when (type) {
         AplicationDataType.TEXT -> TextMessageBox(data).display()
         AplicationDataType.FILE -> TODO()
@@ -51,6 +51,6 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 
 }
 
-class ConfigMessgaeBox(data: String): MessageBox<String>(data){
+class ConfigMessgaeBox(data: String) : MessageBox<String>(data) {
 
 }

@@ -13,8 +13,8 @@ class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
     val serverIP: String by option(help = "The server's IP address ").prompt("What is the server's IP address")
     val serverPort: Int by option(help = "The server's port").int().prompt("What is the port at the server")
-    val clientIP: String by option(help = "Which IP address to share").prompt("What is the IP address you want to use")
-    val clientPort: Int by option(help = "Which port to share").int().prompt("What is the port you want to use")
+    val clientIP: String by option(help = "Which IP address to share").prompt("What is the IP address you want to share")
+    val clientPort: Int by option(help = "Which port to share").int().prompt("What is the port you want to share")
     var clientData: String = ""
 
     override fun run() {
