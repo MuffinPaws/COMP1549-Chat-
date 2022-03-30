@@ -20,7 +20,7 @@ class OperatingParameters : CliktCommand() {
     override fun run() {
         echo("Starting App") // TODO can this be moved out of here?
         echo("generating your fingerprint")
-        echo("Your ID is ${IDFingerprintKeyPair.fingerprint}")
+        echo("Your ID is ${Identity.fingerprint}")
 
         echo("Verifying client info")
         if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")

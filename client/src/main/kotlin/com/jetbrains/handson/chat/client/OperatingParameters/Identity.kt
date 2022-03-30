@@ -6,8 +6,7 @@ import java.security.MessageDigest
 import java.util.*
 
 // TODO better obj name?
-object IDFingerprintKeyPair {
-    val ID: Pair<String, KeyPair>
+object Identity {
     val fingerprint: String
     val key: KeyPair
 
@@ -21,7 +20,5 @@ object IDFingerprintKeyPair {
 
         key = generator.generateKeyPair()
         fingerprint = toBase64URL(getHash.digest(key.public.encoded))
-
-        ID = Pair(fingerprint, key)
     }
 }
