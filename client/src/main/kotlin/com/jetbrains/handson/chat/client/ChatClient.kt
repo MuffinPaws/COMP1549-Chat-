@@ -69,6 +69,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
 suspend fun DefaultClientWebSocketSession.inputMessages() {
     //TODO Init client config message and serialize
     send(operatingParameters.clientData)
+    //TODO parse init of all clients
     while (true) {
         //for each user input
         //TODO change

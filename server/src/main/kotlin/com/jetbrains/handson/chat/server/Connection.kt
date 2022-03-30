@@ -6,4 +6,8 @@ import io.ktor.http.cio.websocket.*
 class Connection(val session: DefaultWebSocketSession, val clientData: clientData) {
     // by default no connection/member is coordinator
     var isCoord = false
+        set(value) {
+            field = value
+            clientData.isCoord = value
+        }
 }

@@ -1,5 +1,7 @@
 package com.jetbrains.handson.chat.server
 
+import com.jetbrains.handson.chat.server.connections.getAllClients
+import com.jetbrains.handson.chat.server.connections.setOf
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
@@ -13,8 +15,18 @@ import java.util.*
 // args are collected from HOCON and passed to Netty server
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-// set of all client connections
-val connections = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+object connections{
+    // set of all client connections
+    val setOf = Collections.synchronizedSet<Connection?>(LinkedHashSet())
+    fun getAllClients(): String {
+        val listOfClients = mutableListOf<clientData>()
+        setOf.forEach { listOfClients.add(it.clientData) }
+        Json.encodeToString(listOfClients)
+        return """
+            {"fromID":"server","toID":"init","data":"${Json.encodeToString(listOfClients)}","type":"CONFIG","time":${System.currentTimeMillis()}}
+        """.trimIndent()
+    }
+}
 
 @Suppress("unused")
 fun Application.module() {
@@ -31,19 +43,18 @@ fun Application.module() {
             // add connection to set of connections
             val clientData: clientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
             val thisConnection = Connection(this, clientData)
-            connections += thisConnection
+            setOf += thisConnection
             // advise client of the just established connection
-            thisConnection.session.send("CONNECTION ESTABLISHED")
-            send(Json.encodeToString(clientData.getAllClients().toList()))
-            println(Json.encodeToString(clientData.getAllClients().toList())) // TODO remove this
+            send(getAllClients())
+            println(getAllClients()) // TODO remove this
             try {
                 // when user connects log
                 println("Adding ${thisConnection.clientData.name}")
                 // show the user that the connection as been established
-                send("You are connected! There are ${connections.count()} users here.")
+                send("You are connected! There are ${setOf.count()} users here.")
                 // if only 1 user, that's the coordinator
-                if (connections.count() == 1) {
-                    send("You are the coordinator my friend!")
+                if (setOf.count() == 1) {
+                    send("You are the coordinator my friend!")//TODO change to config message
                     thisConnection.isCoord=true
                 }
 
@@ -52,13 +63,10 @@ fun Application.module() {
                     val receivedText = frame.readText()
                     // if received text is a /command run its own function, else send the text to all the members
                     if (receivedText == "/members") {
-                        getExisistingMembers(connections, thisConnection)
+                        getExisistingMembers(setOf, thisConnection)
                     } else {
                         // text to be sent to all members
-                        val sendersName = if (thisConnection.isCoord) "${thisConnection.clientData.name}-COORD"
-                        else thisConnection.clientData.name
-                        val textWithUsername = "[${sendersName}]: $receivedText"
-                        connections.forEach {
+                        setOf.forEach {
                             it.session.send(receivedText)
                         }
                     }
@@ -69,9 +77,9 @@ fun Application.module() {
                 // when client disconnects, log client leaving
                 println("Removing ${thisConnection.clientData.name}")
                 // remove that client's connection from the connections hashset
-                connections -= thisConnection
+                setOf -= thisConnection
                 // if the COORD disconnects, then someone else has to take that role
-                if (connections.isNotEmpty()) {
+                if (setOf.isNotEmpty()) {
                     setNewCoord()
                 }
             }
@@ -86,11 +94,11 @@ suspend fun setNewCoord() {
     If there is not, sets that role to the first connection in the set.
      */
     var counter = 0
-    connections.forEach { connection: Connection -> if (connection.isCoord) counter++ }
+    setOf.forEach { connection: Connection -> if (connection.isCoord) counter++ }
     if (counter == 0) {
-        println("Setting ${connections.elementAt(0).clientData.name} as the new COORD...")
-        connections.elementAt(0).isCoord = true
-        connections.forEach { it.session.send("${connections.elementAt(0).clientData.name} is the new coordinator!") }
+        println("Setting ${setOf.elementAt(0).clientData.name} as the new COORD...")
+        setOf.elementAt(0).isCoord = true
+        setOf.forEach { it.session.send("${setOf.elementAt(0).clientData.name} is the new coordinator!") }
     }
 }
 
