@@ -10,6 +10,7 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.encodeToString
 import kotlin.system.exitProcess
 
 val operatingParameters = OperatingParameters()
@@ -48,11 +49,15 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
     try {
         //for each incoming message
         for (frame in incoming) {
-            //TODO change to any data type
-            frame as? Frame.Text ?: continue
-            val message = Json.decodeFromString<Message>(frame.readText())
-            // print frame parsed from server
-            message.display()
+            try {
+                //TODO change to any data type
+                frame as? Frame.Text ?: continue
+                val message = Json.decodeFromString<Message>(frame.readText())
+                // print frame parsed from server
+                message.display()
+            } catch (e: Exception) {
+                println("Info while receiving: " + e.localizedMessage)
+            }
 
         }
     } catch (e: Exception) {
@@ -81,7 +86,8 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         } else {
             try {
                 // send what you typed
-                send(message)
+                val messageP = Message(toID = "hdsfg", data = message, type = AplicationDataType.TEXT)
+                send(Json.encodeToString(messageP))
             } catch (e: Exception) {
                 println("Error while sending: " + e.localizedMessage)
                 return

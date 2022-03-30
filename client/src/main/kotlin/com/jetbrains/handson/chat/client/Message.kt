@@ -64,7 +64,7 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 class ConfigMessgaeBox(data: String) : MessageBox<String>(data) {
     fun updateMemebers(){
         val newClientLis = Json.decodeFromString<List<clientData>>(data)
-        allClients.listOf.removeAll { x -> true }
+        allClients.listOf.removeAll { true }
         allClients.listOf.addAll(newClientLis)
     }
 }
