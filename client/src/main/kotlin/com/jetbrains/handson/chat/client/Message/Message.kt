@@ -1,10 +1,11 @@
-package com.jetbrains.handson.chat.client
+package com.jetbrains.handson.chat.client.Message
 
 import com.jetbrains.handson.chat.client.OperatingParameters.Identity
 import com.jetbrains.handson.chat.client.allClientsData.allClients
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
+// Message data class
 @Serializable
 data class Message(
     @EncodeDefault val fromID: String = Identity.fingerprint,
@@ -13,12 +14,15 @@ data class Message(
     val type: ApplicationDataType,
     @EncodeDefault val time: Long = System.currentTimeMillis()
 ) {
+
+    // Display message
     fun display() = when (type) {
         ApplicationDataType.TEXT -> TextMessageBox(data).display(fromID, time)
         ApplicationDataType.FILE -> println() //TODO impliment or remove
         ApplicationDataType.CONFIG -> ConfigMessageBox(data).updateMembers()
     }
 
+    // Share functions for all messages
     companion object {
         fun message1to1(): MutableList<Message> {
             val message = mutableListOf<Message>()
