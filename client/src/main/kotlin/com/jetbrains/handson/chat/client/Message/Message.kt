@@ -35,7 +35,7 @@ data class Message(
         fun messageBroadcast(): MutableList<Message> {
             val messages = mutableListOf<Message>()
             val input = getInput()
-            for (client in allClients.listOf){
+            for (client in allClients.listOf) {
                 if (client.ID == Identity.fingerprint) continue
                 messages.add(Message(toID = client.ID, data = input, type = ApplicationDataType.TEXT))
             }

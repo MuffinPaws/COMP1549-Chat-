@@ -2,6 +2,8 @@ package com.jetbrains.handson.chat.client
 
 import com.jetbrains.handson.chat.client.Menu.Menu
 import com.jetbrains.handson.chat.client.Menu.Tasks
+import com.jetbrains.handson.chat.client.Message.Message
+import com.jetbrains.handson.chat.client.Message.Messages
 import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
 import com.jetbrains.handson.chat.client.allClientsData.allClients
 import io.ktor.client.*
