@@ -11,6 +11,7 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -76,9 +77,8 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     send(operatingParameters.clientData)
     println("Loading ⏳")
     //loop to wait for init of all clients list
-    while (true){
-        Thread.sleep(1000) //TODO check value
-        if (allClients.listOf.isEmpty()) continue else break
+    while (allClients.listOf.isEmpty()){
+        Thread.sleep(10)
     }
     println("You are connected!")
     //for each user input
@@ -93,7 +93,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         when (task){
             Tasks.EXIT -> exit("Exi")
             Tasks.QUIT -> exit("Quit")
-            Tasks.SEND -> print("Loading ⏳")
+            Tasks.SEND -> println("Loading ⏳")
             Tasks.READ -> {
                 Messages.read()
                 continue
@@ -115,28 +115,24 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
         }
-        val toID = allClients.findMemberID()
-        print("Please type your massage: ")
-        val input = readln()
-        // if input is blank double check
-        if (input.isBlank()){
-            while (true){
-                print("Your message is blank. Are you sure you want to send a blank message? (enter yes or no): ")
-                when (readln().lowercase().first()){
-                    'y' -> break
-                    'n' -> continue@input
-                    else -> println("unknown command🥴")
-                }
+        print("Do you want to send a 'broadcast' or 'private' message: ")
+        val messages = when(readln()){
+            "broadcast" -> Message.messageBroadcast()
+            "private" -> Message.message1to1()
+            else -> {
+                println("Error parsing task input.🤦 Please try again.")
+                continue
             }
         }
         // member can request existing members
-        try {
-            // send what you typed
-            val message = Message(toID = toID, data = input, type = ApplicationDataType.TEXT)
-            send(Json.encodeToString(message))
-        } catch (e: Exception) {
-            println("Error while sending: " + e.localizedMessage)
-            return
+        messages.forEach {
+            try {
+                // send what you typed
+                send(Json.encodeToString(it))
+            } catch (e: Exception) {
+                println("Error while sending: " + e.localizedMessage)
+                return
+            }
         }
     }
 }

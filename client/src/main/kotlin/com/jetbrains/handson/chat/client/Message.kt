@@ -9,7 +9,6 @@ import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.time.Instant
 import java.time.format.DateTimeFormatter
-import java.time.format.FormatStyle
 import java.util.*
 
 @Serializable
@@ -25,6 +24,45 @@ data class Message(
         ApplicationDataType.FILE -> println() //TODO impliment or remove
         ApplicationDataType.PING -> println()
         ApplicationDataType.CONFIG -> ConfigMessageBox(data).updateMembers()
+    }
+
+    companion object {
+        fun message1to1(): MutableList<Message> {
+            val message = mutableListOf<Message>()
+            val toID = allClients.findMemberID()
+            val input = getInput()
+            message.add(Message(toID = toID, data = input, type = ApplicationDataType.TEXT))
+            return message
+        }
+
+        fun messageBroadcast(): MutableList<Message> {
+            val messages = mutableListOf<Message>()
+            val input = getInput()
+            for (client in allClients.listOf){
+                if (client.ID == Identity.fingerprint) continue
+                messages.add(Message(toID = client.ID, data = input, type = ApplicationDataType.TEXT))
+            }
+            return messages
+        }
+
+        private fun getInput(): String {
+            input@ while (true) {
+                print("Please type your massage: ")
+                val input = readln()
+                // if input is blank double check
+                if (input.isBlank()) {
+                    while (true) {
+                        print("Your message is blank. Are you sure you want to send a blank message? (enter yes or no): ")
+                        when (readln().lowercase().first()) {
+                            'y' -> break
+                            'n' -> continue@input
+                            else -> println("unknown command🥴")
+                        }
+                    }
+                }
+                return input
+            }
+        }
     }
 }
 
@@ -84,11 +122,15 @@ class TextMessageBox(data: String) : MessageBox<String>(data) {
     fun display(fromID: String, time: Long) {
         val fromMemberName = allClients.getMemberByID(fromID).name
         val timeString = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(time))
-        println("""
+        println(
+            """
             Message from: $fromMemberName
             ${fromMemberName}s fingerprint: ${fromID.substring(0..allClients.getFingerprintTruncation())}
             Received at: $timeString
-        """.trimIndent())
+            Message:
+            $data
+        """.trimIndent()
+        )
     }
 }
 
