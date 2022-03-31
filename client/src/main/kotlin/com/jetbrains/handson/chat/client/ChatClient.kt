@@ -106,7 +106,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         }
         // get user command
         val task = Menu.getTask()
-        // lamda for exit message
+        // lambda for exit message
         val exit = { x: String ->
             println("${x}ting")
             println("Connection closed. Goodbye!")
