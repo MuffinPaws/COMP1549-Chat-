@@ -124,8 +124,29 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
 }
 
 enum class tasks{
+    EXIT,
+    QUIT,
     SEND,
     READ,
     HISTORY,
-    MEMBERS;
+    MEMBERS,
+    HELP;
+}
+
+object menu{
+    const val shortMenu = "For list of all commands enter help. \n Please enter command: "
+    const val longMenu = """
+                Type 'exit' or 'quit' to close the program. 
+                type 'read' to read messages
+                type 'send' to type a new message (Press Enter to send it)
+                type 'history' to fetch messages history
+                type 'members' to list all members
+                Please enter command: 
+    """
+    fun print(short:Boolean = true){
+        if (short) return print(shortMenu)
+        print(longMenu.trimIndent())
+    }
+
+
 }
