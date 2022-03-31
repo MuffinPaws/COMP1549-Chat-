@@ -55,7 +55,6 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
             try {
                 //TODO change to any data type
                 frame as? Frame.Text ?: continue
-                println(frame.readText()) //TODO remove
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
                 if (Messages.put(message) == true && message.type == ApplicationDataType.PING){
@@ -83,7 +82,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     }
     println("You are connected!")
     //for each user input
-    while (true) {
+    input@while (true) {
         allClients.Status()
         val task = Menu.getTask()
         val exit = { x: String ->
@@ -94,7 +93,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         when (task){
             Tasks.EXIT -> exit("Exi")
             Tasks.QUIT -> exit("Quit")
-            Tasks.SEND -> print("Please type your massage: ")
+            Tasks.SEND -> print("Loading ⏳")
             Tasks.READ -> {
                 Messages.read()
                 continue
@@ -112,13 +111,25 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
         }
-        val message = readln()
-        if (message.isBlank()) continue
+        val toID = allClients.findMemberID()
+        print("Please type your massage: ")
+        val input = readln()
+        // if input is blank double check
+        if (input.isBlank()){
+            while (true){
+                print("Your message is blank. Are you sure you want to send a blank message? (enter yes or no): ")
+                when (readln().lowercase().first()){
+                    'y' -> break
+                    'n' -> continue@input
+                    else -> println("unknown command🥴")
+                }
+            }
+        }
         // member can request existing members
         try {
             // send what you typed
-            val messageP = Message(toID = "hdsfg", data = message, type = ApplicationDataType.TEXT)
-            send(Json.encodeToString(messageP))
+            val message = Message(toID = toID, data = input, type = ApplicationDataType.TEXT)
+            send(Json.encodeToString(message))
         } catch (e: Exception) {
             println("Error while sending: " + e.localizedMessage)
             return
