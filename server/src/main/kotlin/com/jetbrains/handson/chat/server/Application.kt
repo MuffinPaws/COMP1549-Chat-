@@ -43,12 +43,15 @@ fun Application.module() {
                 //send to all clients list of all clients (including new member)
                 connections.broadcast(getAllClients())
                 for (frame in incoming) {
-                    frame as? Frame.Text ?: continue
-                    val receivedMessage = frame.readText()
-                    // text to be sent to all members
-                    //TODO change to 1 to 1
-                    setOf.forEach {
-                        it.session.send(receivedMessage)
+                    try {
+                        frame as? Frame.Text ?: continue
+                        val receivedData = frame.readText()
+                        val receivedMessage = Json.decodeFromString<Message>(receivedData)
+                        // text to be sent to all members
+                        //TODO change to 1 to 1
+                        connections.send(receivedData, receivedMessage.toID)
+                    } catch (e: Exception) {
+                        println("Received malformed frame: " + e.localizedMessage)
                     }
                 }
             } catch (e: Exception) {
