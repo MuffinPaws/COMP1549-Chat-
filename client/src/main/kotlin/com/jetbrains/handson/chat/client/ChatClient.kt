@@ -5,7 +5,7 @@ import com.jetbrains.handson.chat.client.Menu.Tasks
 import com.jetbrains.handson.chat.client.Message.Message
 import com.jetbrains.handson.chat.client.Message.Messages
 import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
-import com.jetbrains.handson.chat.client.allClientsData.allClients
+import com.jetbrains.handson.chat.client.allMembersData.AllMembers
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
@@ -67,7 +67,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
                 Messages.put(message)
                 // print frame parsed from server
                 if (operatingParameters.listening) {
-                    allClients.Status()
+                    AllMembers.status()
                     Messages.read()
                 }
                 //message.display()
@@ -86,13 +86,13 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     send(operatingParameters.clientData)
     println("Loading ⏳")
     //loop to wait for init of all clients list
-    while (allClients.listOf.isEmpty()) {
+    while (AllMembers.listOfAllMembers.isEmpty()) {
         Thread.sleep(10)
     }
     println("You are connected!")
     //for each user input
     input@ while (true) {
-        allClients.Status()
+        AllMembers.status()
         if (operatingParameters.listening) readln()
         val task = Menu.getTask()
         val exit = { x: String ->
@@ -113,7 +113,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
             Tasks.MEMBERS -> {
-                allClients.printMembers()
+                AllMembers.printMembers()
                 continue
             }
             Tasks.LISTEN -> {

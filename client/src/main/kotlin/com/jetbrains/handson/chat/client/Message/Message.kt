@@ -1,7 +1,7 @@
 package com.jetbrains.handson.chat.client.Message
 
 import com.jetbrains.handson.chat.client.OperatingParameters.Identity
-import com.jetbrains.handson.chat.client.allClientsData.allClients
+import com.jetbrains.handson.chat.client.allMembersData.AllMembers
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
@@ -26,7 +26,7 @@ data class Message(
     companion object {
         fun message1to1(): MutableList<Message> {
             val message = mutableListOf<Message>()
-            val toID = allClients.findMemberID()
+            val toID = AllMembers.findMemberID()
             val input = getInput()
             message.add(Message(toID = toID, data = input, type = ApplicationDataType.TEXT))
             return message
@@ -35,7 +35,7 @@ data class Message(
         fun messageBroadcast(): MutableList<Message> {
             val messages = mutableListOf<Message>()
             val input = getInput()
-            for (client in allClients.listOf) {
+            for (client in AllMembers.listOfAllMembers) {
                 if (client.ID == Identity.fingerprint) continue
                 messages.add(Message(toID = client.ID, data = input, type = ApplicationDataType.TEXT))
             }

@@ -1,19 +1,19 @@
-package com.jetbrains.handson.chat.client.allClientsData
+package com.jetbrains.handson.chat.client.allMembersData
 
 import com.jetbrains.handson.chat.client.OperatingParameters.Identity
-import com.jetbrains.handson.chat.client.operatingParameters
 
-private const val MIN_DISPLAY_LENGHTH = 5
+private const val MIN_ID_DISPLAY_LENGTH = 5
 
-object allClients {
-    val listOf = mutableListOf<clientData>()
-    private var fingerprintTruncation = MIN_DISPLAY_LENGHTH
+// Singleton object for storing info about all Members
+object AllMembers {
+    val listOfAllMembers = mutableListOf<clientData>()
+    private var IDTruncationLength = MIN_ID_DISPLAY_LENGTH
 
-    fun updateFingerprintTruncation() {
-        var index: Int = MIN_DISPLAY_LENGHTH
+    private fun updateIDTruncation() {
+        var index: Int = MIN_ID_DISPLAY_LENGTH
         while (true) {
             val used = mutableListOf<String>()
-            for (client in listOf) {
+            for (client in listOfAllMembers) {
                 val fingerprint = client.ID
                 val subString = fingerprint.substring(0, index)
                 if (used.contains(subString)) {
@@ -22,43 +22,34 @@ object allClients {
                 }
                 used.add(subString)
             }
-            fingerprintTruncation = index
+            IDTruncationLength = index
             break
         }
     }
 
-    fun getFingerprintTruncation() = fingerprintTruncation
+    fun getFingerprintTruncation() = IDTruncationLength
 
-    fun Status(): Unit {
+    fun status() {
         var isCoord = "."
-        for (client in listOf) {
+        for (client in listOfAllMembers) {
             if (client.ID == Identity.fingerprint) {
                 if (client.isCoord) {
                     isCoord = " and you are the coordinator my friend! 💏"
-                    //TODO update operating parameters
                 }
                 break
             }
         }
-        println("There are ${listOf.size} users here$isCoord")
+        println("There are ${listOfAllMembers.size} users here$isCoord")
     }
 
-    //TODO check
-    fun getCoordID(): String {
-        for (client in listOf) {
-            if (client.isCoord) return client.ID
-        }
-        return ""
-    }
-
-    fun printMembers(listOfMembers: MutableList<clientData> = listOf) {
-        updateFingerprintTruncation()
+    fun printMembers(listOfMembers: MutableList<clientData> = listOfAllMembers) {
+        updateIDTruncation()
         listOfMembers.forEach {
             if (it.ID == Identity.fingerprint) println("This is you:")
             println(
                 """
                 Member name ${it.name}
-                ${it.name}s fingerprint ${it.ID.substring(0, fingerprintTruncation)}
+                ${it.name}s fingerprint ${it.ID.substring(0, IDTruncationLength)}
                 ${it.name}s shared IP address and port ${it.IP}:${it.port}
                 ${it.name} is ${if (!it.isCoord) "not " else ""}the coordinator
             """.trimIndent()
@@ -68,7 +59,7 @@ object allClients {
         println("End of list of members.")
     }
 
-    fun findMemberID(listOfMembers: MutableList<clientData> = listOf):String{
+    fun findMemberID(listOfMembers: MutableList<clientData> = listOfAllMembers):String{
         val matchingMembers = mutableListOf<clientData>()
         print("Please enter the member you wish to message.\nYou can enter their (partial or full) name, fingerprint or ip address: ")
         val input = readln()
@@ -92,7 +83,7 @@ object allClients {
     }
 
     fun getMemberByID(ID:String): clientData {
-        listOf.forEach { if (it.ID.equals(ID)) return it }
-        return clientData("OFFFLINE MEMBER", ID, "::!", 1234)
+        listOfAllMembers.forEach { if (it.ID == ID) return it }
+        return clientData("DISCONNECTED MEMBER", ID, "::!", 1234)
     }
 }
