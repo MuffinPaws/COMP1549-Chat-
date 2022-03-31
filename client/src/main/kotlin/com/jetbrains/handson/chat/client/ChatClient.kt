@@ -100,7 +100,10 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         // Print status
         AllMembers.status()
         // When in listening mode await interrupt from user
-        if (operatingParameters.listening) readln()
+        if (operatingParameters.listening) {
+            readln()
+            operatingParameters.listening = !operatingParameters.listening
+        }
         // get user command
         val task = Menu.getTask()
         // lamda for exit message
