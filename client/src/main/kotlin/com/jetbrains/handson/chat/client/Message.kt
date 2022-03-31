@@ -78,6 +78,7 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 }
 
 class ConfigMessageBox(data: String) : MessageBox<String>(data) {
+    //TODO add detect if coord now and show user "You are the coordinator my friend!"
     fun updateMembers(){
         val newClientLis = Json.decodeFromString<List<clientData>>(data)
         allClients.listOf.removeAll { true }

@@ -7,15 +7,15 @@ import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import java.time.Duration
 import java.util.*
 
 // args are collected from HOCON and passed to Netty server
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
-object connections{
+object connections {
     // set of all client connections
     val setOf = Collections.synchronizedSet<Connection?>(LinkedHashSet())
     fun getAllClients(): String {
@@ -50,25 +50,18 @@ fun Application.module() {
             try {
                 // when user connects log
                 println("Adding ${thisConnection.clientData.name}")
-                // show the user that the connection as been established
-                send("You are connected! There are ${setOf.count()} users here.")
                 // if only 1 user, that's the coordinator
                 if (setOf.count() == 1) {
-                    send("You are the coordinator my friend!")//TODO change to config message
-                    thisConnection.isCoord=true
+                    thisConnection.isCoord = true
+                    send(getAllClients())
                 }
 
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()
-                    // if received text is a /command run its own function, else send the text to all the members
-                    if (receivedText == "/members") {
-                        getExisistingMembers(setOf, thisConnection)
-                    } else {
-                        // text to be sent to all members
-                        setOf.forEach {
-                            it.session.send(receivedText)
-                        }
+                    // text to be sent to all members
+                    setOf.forEach {
+                        it.session.send(receivedText)
                     }
                 }
             } catch (e: Exception) {
@@ -78,9 +71,16 @@ fun Application.module() {
                 println("Removing ${thisConnection.clientData.name}")
                 // remove that client's connection from the connections hashset
                 setOf -= thisConnection
+                // inform all clients of dismember
+                setOf.forEach {
+                    it.session.send(getAllClients())
+                }
                 // if the COORD disconnects, then someone else has to take that role
                 if (setOf.isNotEmpty()) {
                     setNewCoord()
+                    setOf.forEach {
+                        it.session.send(getAllClients())
+                    }
                 }
             }
         }
@@ -98,7 +98,6 @@ suspend fun setNewCoord() {
     if (counter == 0) {
         println("Setting ${setOf.elementAt(0).clientData.name} as the new COORD...")
         setOf.elementAt(0).isCoord = true
-        setOf.forEach { it.session.send("${setOf.elementAt(0).clientData.name} is the new coordinator!") }
     }
 }
 
