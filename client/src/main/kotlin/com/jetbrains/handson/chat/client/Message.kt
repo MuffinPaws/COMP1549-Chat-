@@ -69,6 +69,7 @@ abstract class MessageBox<T>(t: T) {
 
 class TextMessageBox(data: String) : MessageBox<String>(data) {
     override fun display() {
+        //TODO
         println("Message from ...  : $data")
     }
 }
@@ -82,7 +83,6 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 }
 
 class ConfigMessageBox(dataB64: String) : MessageBox<String>(dataB64) {
-    //TODO add detect if coord now and show user "You are the coordinator my friend!"
     private val dataParsed = String(Base64.getUrlDecoder().decode(dataB64))
     fun updateMembers(){
         val newClientLis = Json.decodeFromString<List<clientData>>(dataParsed)

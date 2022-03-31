@@ -42,7 +42,7 @@ fun main(args: Array<String>) {
     }
     //release system resources
     client.close()
-    println("Connection closed. Goodbye!")
+    println("Connection closed. 😿 Goodbye! 👋")
 }
 
 // Double check this part
