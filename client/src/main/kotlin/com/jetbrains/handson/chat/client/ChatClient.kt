@@ -83,7 +83,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     }
     println("You are connected!")
     //for each user input
-    while (true) {
+    input@while (true) {
         allClients.Status()
         val task = Menu.getTask()
         val exit = { x: String ->
@@ -113,7 +113,17 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
             }
         }
         val message = readln()
-        if (message.isBlank()) continue
+        // if input is blank double check
+        if (message.isBlank()){
+            while (true){
+                print("Your message is blank. Are you sure you want to send a blank message? (enter yes or no): ")
+                when (readln().lowercase().first()){
+                    'y' -> break
+                    'n' -> continue@input
+                    else -> println("unknown command🥴")
+                }
+            }
+        }
         // member can request existing members
         try {
             // send what you typed
