@@ -56,7 +56,9 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
                 println(frame.readText()) //TODO remove
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
-                Messages.put(message)
+                if (Messages.put(message) == true && message.type == ApplicationDataType.PING){
+                    //TODO ping reply
+                }
                 //message.display()
             } catch (e: Exception) {
                 println("Info while receiving: " + e.localizedMessage)
