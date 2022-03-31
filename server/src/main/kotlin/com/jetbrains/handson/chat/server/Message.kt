@@ -3,6 +3,7 @@ package com.jetbrains.handson.chat.server
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
+// Message is a model for deserialization of message headers
 @Serializable
 data class Message(
     val fromID: String,
