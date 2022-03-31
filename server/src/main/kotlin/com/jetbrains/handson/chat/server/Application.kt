@@ -31,7 +31,6 @@ fun Application.module() {
             val thisConnection = Connection(this, clientData)
             setOf += thisConnection
             // advise client of the just established connection
-            send(getAllClients())
             println(getAllClients()) // TODO remove this
             try {
                 // when user connects log
@@ -39,8 +38,9 @@ fun Application.module() {
                 // if only 1 user, that's the coordinator
                 if (setOf.count() == 1) {
                     thisConnection.isCoord = true
-                    send(getAllClients())
                 }
+                //init clilt with list of all memebers
+                send(getAllClients())
 
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
