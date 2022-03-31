@@ -123,3 +123,9 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     }
 }
 
+enum class tasks{
+    SEND,
+    READ,
+    HISTORY,
+    MEMBERS;
+}
