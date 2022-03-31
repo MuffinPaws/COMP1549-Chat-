@@ -9,7 +9,6 @@ import io.ktor.websocket.*
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.time.Duration
-import java.util.*
 
 // args are collected from HOCON and passed to Netty server
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
@@ -74,7 +73,7 @@ fun Application.module() {
 }
 
 
-suspend fun setNewCoord() {
+fun setNewCoord() {
     /*
     This function checks the presence of a coordinator in the connections set.
     If there is not, sets that role to the first connection in the set.
@@ -88,17 +87,17 @@ suspend fun setNewCoord() {
 }
 
 
-suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnection: Connection) {
-    /*
-    This function checks if a member has requested the server (by using the /members command)
-    to get the list of existing members.
-    */
-    var listOfExistingMembers = ""
-    connections.forEach {
-        listOfExistingMembers += "[name: ${it.clientData.name}, " +
-                "coord: ${it.isCoord}, id: ciccio99, IP: 000, Port: 000]\n"
-    }
-    println("Sending list of existing members to ${thisConnection.clientData.name}...")
-    thisConnection.session.send(listOfExistingMembers)
-    thisConnection.session.send("End of list!")
-}
+//suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnection: Connection) {
+//    /*
+//    This function checks if a member has requested the server (by using the /members command)
+//    to get the list of existing members.
+//    */
+//    var listOfExistingMembers = ""
+//    connections.forEach {
+//        listOfExistingMembers += "[name: ${it.clientData.name}, " +
+//                "coord: ${it.isCoord}, id: ciccio99, IP: 000, Port: 000]\n"
+//    }
+//    println("Sending list of existing members to ${thisConnection.clientData.name}...")
+//    thisConnection.session.send(listOfExistingMembers)
+//    thisConnection.session.send("End of list!")
+//}
