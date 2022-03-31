@@ -79,7 +79,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     //for each user input
     while (true) {
         println(allClients.Status())
-        //TODO change
+        //TODO change move to short menu with long menu for help
         println(
                 """
                 Type 'exit' or 'quit' to close the program. 
