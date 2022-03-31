@@ -31,6 +31,14 @@ object Messages{
 
     fun put(message: Message, read: Boolean = false): Boolean? {
         //TODO filter config and ping
+        if (message.type == ApplicationDataType.PING){
+            messages.put(message, read)
+            return true
+        }
+        if (message.type == ApplicationDataType.CONFIG){
+            message.display()
+            return false
+        }
         return messages.put(message, read)
     }
     //TODO Filter only text messages
