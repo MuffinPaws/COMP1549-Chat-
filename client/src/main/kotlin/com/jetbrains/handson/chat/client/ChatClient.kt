@@ -57,9 +57,11 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
                 //TODO change to any data type
                 frame as? Frame.Text ?: continue
                 val message = Json.decodeFromString<Message>(frame.readText())
+                Messages.put(message)
                 // print frame parsed from server
-                if (Messages.put(message) == true && message.type == ApplicationDataType.PING){
-                    //TODO ping reply
+                if (operatingParameters.listening){
+                    allClients.Status()
+                    Messages.read()
                 }
                 //message.display()
             } catch (e: Exception) {
@@ -84,6 +86,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     //for each user input
     input@while (true) {
         allClients.Status()
+        if (operatingParameters.listening) readln()
         val task = Menu.getTask()
         val exit = { x: String ->
             println("${x}ting")
@@ -107,7 +110,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
             Tasks.LISTEN -> {
-                listen
+                operatingParameters.listening = !operatingParameters.listening
                 continue
             }
             else -> {

@@ -16,6 +16,7 @@ class OperatingParameters : CliktCommand() {
     val clientIP: String by option(help = "Which IP address to share").prompt("What is the IP address you want to share")
     val clientPort: Int by option(help = "Which port to share").int().prompt("What is the port you want to share")
     var clientData: String = ""
+    var listening:Boolean = false
 
     override fun run() {
         echo("Starting App") // TODO can this be moved out of here?
