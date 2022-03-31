@@ -7,6 +7,9 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import java.time.Instant
+import java.time.format.DateTimeFormatter
+import java.time.format.FormatStyle
 import java.util.*
 
 @Serializable
@@ -18,7 +21,7 @@ data class Message(
     @EncodeDefault val time: Long = System.currentTimeMillis()
 ) {
     fun display() = when (type) {
-        ApplicationDataType.TEXT -> TextMessageBox(data).display()
+        ApplicationDataType.TEXT -> TextMessageBox(data).display(toID, time)
         ApplicationDataType.FILE -> println() //TODO impliment or remove
         ApplicationDataType.PING -> println()
         ApplicationDataType.CONFIG -> ConfigMessageBox(data).updateMembers()
@@ -78,9 +81,14 @@ abstract class MessageBox<T>(t: T) {
 }
 
 class TextMessageBox(data: String) : MessageBox<String>(data) {
-    override fun display() {
-        //TODO
-        println("Message from ...  : $data")
+    fun display(fromID: String, time: Long) {
+        val fromMemberName = allClients.getMemberByID(fromID).name
+        val timeString = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(time))
+        println("""
+            Message from: $fromMemberName
+            ${fromMemberName}s fingerprint: ${fromID.substring(0..allClients.getFingerprintTruncation())}
+            Received at: $timeString
+        """.trimIndent())
     }
 }
 

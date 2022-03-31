@@ -27,6 +27,8 @@ object allClients {
         }
     }
 
+    fun getFingerprintTruncation() = fingerprintTruncation
+
     fun Status(): Unit {
         var isCoord = "."
         for (client in listOf) {
@@ -87,5 +89,10 @@ object allClients {
         println("There multiple matches to your search:")
         printMembers(matchingMembers)
         return findMemberID(matchingMembers)
+    }
+
+    fun getMemberByID(ID:String): clientData {
+        listOf.forEach { if (it.ID.equals(ID)) return it }
+        return clientData("OFFFLINE MEMBER", ID, "::!", 1234)
     }
 }
