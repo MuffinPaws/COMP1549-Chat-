@@ -74,13 +74,14 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
 suspend fun DefaultClientWebSocketSession.inputMessages() {
     send(operatingParameters.clientData)
     println("Loading ⏳")
-    while (allClients.listOf.size==0){
-        //loop to wait for init of all clients list
-    }
+    //TODO fix waiting for server list
+//    while (allClients.listOf.size==0){
+//        //loop to wait for init of all clients list
+//    }
     println("You are connected!")
     //for each user input
     while (true) {
-        println(allClients.Status())
+        allClients.Status()
         //TODO change move to short menu with long menu for help
         println(
                 """

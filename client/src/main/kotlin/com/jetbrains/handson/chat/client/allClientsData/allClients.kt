@@ -30,13 +30,13 @@ object allClients {
         for (client in listOf) {
             if (client.ID == Identity.fingerprint) {
                 if (client.isCoord) {
-                    isCoord = "and you are the coordinator my friend! 💏"
+                    isCoord = " and you are the coordinator my friend! 💏"
                     //TODO update operating parameters
                 }
                 break
             }
         }
-        print("There are ${listOf.size} users here$isCoord")
+        println("There are ${listOf.size} users here$isCoord")
     }
 
     //TODO check
