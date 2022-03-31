@@ -18,7 +18,7 @@ data class Message(
     @EncodeDefault val time: Long = System.currentTimeMillis()
 ) {
     fun display() = when (type) {
-        ApplicationDataType.TEXT -> TextMessageBox(data).display()
+        ApplicationDataType.TEXT -> TextMessageBox(data).display(toID, time)
         ApplicationDataType.FILE -> println() //TODO impliment or remove
         ApplicationDataType.PING -> println()
         ApplicationDataType.CONFIG -> ConfigMessageBox(data).updateMembers()
@@ -78,7 +78,7 @@ abstract class MessageBox<T>(t: T) {
 }
 
 class TextMessageBox(data: String) : MessageBox<String>(data) {
-    override fun display() {
+    fun display(fromID: String, time: Long) {
         //TODO
         println("Message from ...  : $data")
     }
