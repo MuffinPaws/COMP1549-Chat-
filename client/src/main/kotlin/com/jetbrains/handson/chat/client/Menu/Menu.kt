@@ -1,7 +1,7 @@
 package com.jetbrains.handson.chat.client.Menu
 
 object Menu{
-    private const val shortMenu = "For list of all commands enter help. \nPlease enter command: "
+    private const val shortMenu = "For list of all commands enter 'HELP'. \nPlease enter command: "
     private const val longMenu = """
                 Type 'exit' or 'quit' to close the program. 
                 type 'read' to read messages

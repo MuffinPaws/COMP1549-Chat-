@@ -6,6 +6,8 @@ import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.time.Duration
@@ -41,12 +43,15 @@ fun Application.module() {
                 //send to all clients list of all clients (including new member)
                 connections.broadcast(getAllClients())
                 for (frame in incoming) {
-                    frame as? Frame.Text ?: continue
-                    val receivedText = frame.readText()
-                    // text to be sent to all members
-                    //TODO change to 1 to 1
-                    setOf.forEach {
-                        it.session.send(receivedText)
+                    try {
+                        frame as? Frame.Text ?: continue
+                        val receivedData = frame.readText()
+                        val receivedMessage = Json.decodeFromString<Message>(receivedData)
+                        // text to be sent to all members
+                        //TODO change to 1 to 1
+                        connections.send(receivedData, receivedMessage.toID)
+                    } catch (e: Exception) {
+                        println("Received malformed frame: " + e.localizedMessage)
                     }
                 }
             } catch (e: Exception) {
@@ -80,6 +85,15 @@ fun setNewCoord() {
         setOf.elementAt(0).isCoord = true
     }
 }
+
+@Serializable
+data class Message(
+    val fromID: String,
+    val toID: String,
+    val data: String,
+    val type: String,
+    @EncodeDefault val time: Long = System.currentTimeMillis()
+)
 
 
 //suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnection: Connection) {

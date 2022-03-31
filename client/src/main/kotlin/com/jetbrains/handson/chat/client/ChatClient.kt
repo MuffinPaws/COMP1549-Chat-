@@ -11,6 +11,7 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import kotlinx.coroutines.selects.select
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -55,7 +56,6 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
             try {
                 //TODO change to any data type
                 frame as? Frame.Text ?: continue
-                println(frame.readText()) //TODO remove
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
                 if (Messages.put(message) == true && message.type == ApplicationDataType.PING){
@@ -77,13 +77,12 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     send(operatingParameters.clientData)
     println("Loading ⏳")
     //loop to wait for init of all clients list
-    while (true){
-        Thread.sleep(1000) //TODO check value
-        if (allClients.listOf.isEmpty()) continue else break
+    while (allClients.listOf.isEmpty()){
+        Thread.sleep(10)
     }
     println("You are connected!")
     //for each user input
-    while (true) {
+    input@while (true) {
         allClients.Status()
         val task = Menu.getTask()
         val exit = { x: String ->
@@ -94,7 +93,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         when (task){
             Tasks.EXIT -> exit("Exi")
             Tasks.QUIT -> exit("Quit")
-            Tasks.SEND -> print("Please type your massage: ")
+            Tasks.SEND -> println("Loading ⏳")
             Tasks.READ -> {
                 Messages.read()
                 continue
@@ -112,16 +111,24 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
         }
-        val message = readln()
-        if (message.isBlank()) continue
+        print("Do you want to send a 'broadcast' or 'private' message: ")
+        val messages = when(readln()){
+            "broadcast" -> Message.messageBroadcast()
+            "private" -> Message.message1to1()
+            else -> {
+                println("Error parsing task input.🤦 Please try again.")
+                continue
+            }
+        }
         // member can request existing members
-        try {
-            // send what you typed
-            val messageP = Message(toID = "hdsfg", data = message, type = ApplicationDataType.TEXT)
-            send(Json.encodeToString(messageP))
-        } catch (e: Exception) {
-            println("Error while sending: " + e.localizedMessage)
-            return
+        messages.forEach {
+            try {
+                // send what you typed
+                send(Json.encodeToString(it))
+            } catch (e: Exception) {
+                println("Error while sending: " + e.localizedMessage)
+                return
+            }
         }
     }
 }
