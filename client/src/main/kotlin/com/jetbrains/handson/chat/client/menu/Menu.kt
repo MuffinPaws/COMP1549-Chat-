@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.Menu
+package com.jetbrains.handson.chat.client.menu
 
 // object for containing functions to do user prompts and to get input command
 object Menu {

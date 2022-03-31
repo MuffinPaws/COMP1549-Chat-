@@ -1,14 +1,14 @@
-package com.jetbrains.handson.chat.client.Message
+package com.jetbrains.handson.chat.client.message
 
-import com.jetbrains.handson.chat.client.OperatingParameters.Identity
+import com.jetbrains.handson.chat.client.operatingParameters.Identity
 import com.jetbrains.handson.chat.client.allMembersData.AllMembers
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 
-// Message data class
+// message data class
 @Serializable
 data class Message(
-    @EncodeDefault val fromID: String = Identity.fingerprint,
+    @EncodeDefault val fromID: String = Identity.ID,
     val toID: String,
     val data: String,
     val type: ApplicationDataType,
@@ -36,7 +36,7 @@ data class Message(
             val messages = mutableListOf<Message>()
             val input = getInput()
             for (client in AllMembers.listOfAllMembers) {
-                if (client.ID == Identity.fingerprint) continue
+                if (client.ID == Identity.ID) continue
                 messages.add(Message(toID = client.ID, data = input, type = ApplicationDataType.TEXT))
             }
             return messages

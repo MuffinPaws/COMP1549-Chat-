@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.Menu
+package com.jetbrains.handson.chat.client.menu
 
 enum class Tasks {
     EXIT, QUIT, SEND, READ, HISTORY, MEMBERS, HELP, LISTEN, UNKNOWN;

@@ -9,7 +9,7 @@ object Connections {
     // set of all client connections
     val setOf = Collections.synchronizedSet<Connection?>(LinkedHashSet())
 
-    // return Message Json object containing info about all clients
+    // return message Json object containing info about all clients
     fun getAllClients(): String {
         val listOfClients = mutableListOf<ClientData>()
         setOf.forEach { listOfClients.add(it.clientData) }

@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.Message
+package com.jetbrains.handson.chat.client.message
 
 // Singleton object instance to store all messages
 object Messages {

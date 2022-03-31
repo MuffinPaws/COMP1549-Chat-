@@ -1,6 +1,6 @@
 package com.jetbrains.handson.chat.client.allMembersData
 
-import com.jetbrains.handson.chat.client.OperatingParameters.Identity
+import com.jetbrains.handson.chat.client.operatingParameters.Identity
 
 private const val MIN_ID_DISPLAY_LENGTH = 5
 
@@ -32,7 +32,7 @@ object AllMembers {
     fun status() {
         var isCoord = "."
         for (client in listOfAllMembers) {
-            if (client.ID == Identity.fingerprint) {
+            if (client.ID == Identity.ID) {
                 if (client.isCoord) {
                     isCoord = " and you are the coordinator my friend! 💏"
                 }
@@ -45,7 +45,7 @@ object AllMembers {
     fun printMembers(listOfMembers: MutableList<clientData> = listOfAllMembers) {
         updateIDTruncation()
         listOfMembers.forEach {
-            if (it.ID == Identity.fingerprint) println("This is you:")
+            if (it.ID == Identity.ID) println("This is you:")
             println(
                 """
                 Member name ${it.name}

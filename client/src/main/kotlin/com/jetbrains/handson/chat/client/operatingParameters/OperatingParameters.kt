@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.OperatingParameters
+package com.jetbrains.handson.chat.client.operatingParameters
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.output.TermUi.echo
@@ -9,6 +9,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.net.InetAddress
 
+// OperatingParameter extend the Clikt library to parse and store Cli parameters
 class OperatingParameters : CliktCommand() {
     val name: String by option(help = "Your display name").prompt("What is your display name")
     val serverIP: String by option(help = "The server's IP address ").prompt("What is the server's IP address")
@@ -19,9 +20,9 @@ class OperatingParameters : CliktCommand() {
     var listening:Boolean = false
 
     override fun run() {
-        echo("Starting App") // TODO can this be moved out of here?
+        echo("Starting App")
         echo("generating your fingerprint")
-        echo("Your ID is ${Identity.fingerprint}")
+        echo("Your ID is ${Identity.ID}")
 
         echo("Verifying client info")
         if (VerifyIP.isNotValid(clientIP)) echo("Warning the IP address you want use may be Incorrect")

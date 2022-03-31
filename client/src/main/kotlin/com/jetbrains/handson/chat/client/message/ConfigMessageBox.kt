@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.Message
+package com.jetbrains.handson.chat.client.message
 
 import com.jetbrains.handson.chat.client.allMembersData.AllMembers
 import com.jetbrains.handson.chat.client.allMembersData.clientData

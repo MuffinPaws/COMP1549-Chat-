@@ -1,10 +1,10 @@
 package com.jetbrains.handson.chat.client
 
-import com.jetbrains.handson.chat.client.Menu.Menu
-import com.jetbrains.handson.chat.client.Menu.Tasks
-import com.jetbrains.handson.chat.client.Message.Message
-import com.jetbrains.handson.chat.client.Message.Messages
-import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
+import com.jetbrains.handson.chat.client.menu.Menu
+import com.jetbrains.handson.chat.client.menu.Tasks
+import com.jetbrains.handson.chat.client.message.Message
+import com.jetbrains.handson.chat.client.message.Messages
+import com.jetbrains.handson.chat.client.operatingParameters.OperatingParameters
 import com.jetbrains.handson.chat.client.allMembersData.AllMembers
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*

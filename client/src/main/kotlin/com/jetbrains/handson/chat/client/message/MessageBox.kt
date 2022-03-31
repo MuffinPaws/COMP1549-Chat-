@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.Message
+package com.jetbrains.handson.chat.client.message
 
 // abstract class for providing a framework for storing Any data (generic)
 abstract class MessageBox<T>(t: T) {

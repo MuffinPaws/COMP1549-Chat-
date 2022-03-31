@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.Message
+package com.jetbrains.handson.chat.client.message
 
 import com.jetbrains.handson.chat.client.allMembersData.AllMembers
 import java.time.Instant
@@ -11,10 +11,10 @@ class TextMessageBox(data: String) : MessageBox<String>(data) {
         val timeString = DateTimeFormatter.ISO_INSTANT.format(Instant.ofEpochMilli(time))
         println(
             """
-            Message from: $fromMemberName
+            message from: $fromMemberName
             ${fromMemberName}s fingerprint: ${fromID.substring(0..AllMembers.getFingerprintTruncation())}
             Received at: $timeString
-            Message:
+            message:
             $data
         """.trimIndent()
         )
