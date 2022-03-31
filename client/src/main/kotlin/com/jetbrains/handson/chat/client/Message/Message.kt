@@ -18,7 +18,7 @@ data class Message(
     // Display message
     fun display() = when (type) {
         ApplicationDataType.TEXT -> TextMessageBox(data).display(fromID, time)
-        ApplicationDataType.FILE -> println() //TODO impliment or remove
+        ApplicationDataType.FILE -> println() //TODO For future implementation
         ApplicationDataType.CONFIG -> ConfigMessageBox(data).updateMembers()
     }
 
