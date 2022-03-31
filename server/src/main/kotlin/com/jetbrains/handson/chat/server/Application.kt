@@ -38,14 +38,15 @@ fun Application.module() {
                 if (setOf.count() == 1) {
                     thisConnection.isCoord = true
                 }
-                //init clilt with list of all memebers
-                send(getAllClients())
-                //TODO also let every one else know
-
+                //send to all clients list of all clients (including new member)
+                setOf.forEach {
+                    it.session.send(getAllClients())
+                }
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()
                     // text to be sent to all members
+                    //TODO change to 1 to 1
                     setOf.forEach {
                         it.session.send(receivedText)
                     }
