@@ -12,6 +12,7 @@ object connections {
         val listOfClients = mutableListOf<clientData>()
         setOf.forEach { listOfClients.add(it.clientData) }
         val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
+        //TODO use Message data class to wrap
         return """
             {"fromID":"server","toID":"init","data":"${toBase64URL(Json.encodeToString(listOfClients.toList()).toByteArray())}","type":"CONFIG","time":${System.currentTimeMillis()}}
         """.trimIndent()

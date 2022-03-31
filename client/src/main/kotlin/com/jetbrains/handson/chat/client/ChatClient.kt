@@ -93,7 +93,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         when (task){
             Tasks.EXIT -> exit("Exi")
             Tasks.QUIT -> exit("Quit")
-            Tasks.SEND -> print("Please type your massage: ")
+            Tasks.SEND -> print("Loading ⏳")
             Tasks.READ -> {
                 Messages.read()
                 continue
@@ -112,6 +112,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
             }
         }
         val toID = allClients.findMemberID()
+        print("Please type your massage: ")
         val input = readln()
         // if input is blank double check
         if (input.isBlank()){
