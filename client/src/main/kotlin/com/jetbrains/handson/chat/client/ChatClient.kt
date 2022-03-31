@@ -1,5 +1,7 @@
 package com.jetbrains.handson.chat.client
 
+import com.jetbrains.handson.chat.client.Menu.Menu
+import com.jetbrains.handson.chat.client.Menu.Tasks
 import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
 import com.jetbrains.handson.chat.client.allClientsData.allClients
 import io.ktor.client.*
@@ -82,30 +84,27 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     //for each user input
     while (true) {
         allClients.Status()
-        //TODO change move to short menu with long menu for help
-        println(
-                """
-                Type 'exit' or 'quit' to close the program. 
-                type 'read' to read messages
-                type 'send' to type a new message (Press Enter to send it)
-                type 'history' to fetch messages history
-                type 'members' to list all members
-            """.trimIndent()
-        )
+        val task = Menu.getTask()
         val exit = { x: String ->
             println("${x}ting")
             println("Connection closed. Goodbye!")
             exitProcess(0)
         }
-        when (readln()) {
-            "exit" -> exit("Exi")
-            "quit" -> exit("Quit")
-            "read" -> Messages.read()
-            "history" -> Messages.read(true)
-            "members" -> continue // TODO implement
-            "send" -> print("Please type your massage: ")
+        when (task){
+            Tasks.EXIT -> exit("Exi")
+            Tasks.QUIT -> exit("Quit")
+            Tasks.SEND -> print("Please type your massage: ")
+            Tasks.READ -> {
+                Messages.read()
+                continue
+            }
+            Tasks.HISTORY -> {
+                Messages.read(true)
+                continue
+            }
+            Tasks.MEMBERS -> TODO()
             else -> {
-                println("unknown command🥴")
+                println("Error parsing task input.🤦 Please try again.")
                 continue
             }
         }
@@ -122,4 +121,3 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         }
     }
 }
-
