@@ -31,13 +31,11 @@ class OperatingParameters : CliktCommand() {
         echo("Verifying server info")
         if (VerifyIP.isNotValid(serverIP)) echo("Warning the server's IP address may be Incorrect")
         if (VerifyPort.isNotValid(serverPort)) echo("Warning the server's port you want to use may be incorrect")
-        //TODO check if server reachable
 
         clientData = Json.encodeToString(Client(name = name, IP = clientIP, port = clientPort))
     }
 
     object VerifyIP {
-        //TODO  if needed add bogon check
         fun isNotValid(IP: String): Boolean {
             val parsedIP: String = if (IP.contains(':')) {
                 InetAddress.getByName(IP).hostAddress.replaceFirst(":0", ":").replace(":0", "")

@@ -27,7 +27,7 @@ fun main(args: Array<String>) {
     val client = HttpClient {
         install(WebSockets)
     }
-    //run blocking tread/container/instance (nothing else at the same time) TODO check if comment correct
+    //runBlocking means that the thread that runs it gets blocked for the duration of the call, until all the coroutines inside
     try {
         runBlocking {
             //create client websocket instance
