@@ -1,10 +1,10 @@
 package com.jetbrains.handson.chat.client.Message
 
+// Singleton object instance to store all messages
 object Messages {
-    val messages = mutableMapOf<Message, Boolean>()
+    private val messages = mutableMapOf<Message, Boolean>()
 
     fun put(message: Message, read: Boolean = false): Boolean? {
-        //TODO filter config and ping
         if (message.type == ApplicationDataType.CONFIG) {
             message.display()
             return false
