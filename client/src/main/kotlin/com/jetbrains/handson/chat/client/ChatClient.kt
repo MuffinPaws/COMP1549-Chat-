@@ -1,6 +1,7 @@
 package com.jetbrains.handson.chat.client
 
 import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
+import com.jetbrains.handson.chat.client.allClientsData.allClients
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
@@ -52,6 +53,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
             try {
                 //TODO change to any data type
                 frame as? Frame.Text ?: continue
+                println(frame.readText()) //TODO remove
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
                 Messages.put(message)
@@ -68,11 +70,15 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
 }
 
 suspend fun DefaultClientWebSocketSession.inputMessages() {
-    //TODO Init client config message and serialize
     send(operatingParameters.clientData)
-    //TODO parse init of all clients
+    println("Loading ⏳")
+    while (allClients.listOf.size==0){
+        //loop to wait for init of all clients list
+    }
+    println("You are connected!")
+    //for each user input
     while (true) {
-        //for each user input
+        println(allClients.Status())
         //TODO change
         println(
                 """
