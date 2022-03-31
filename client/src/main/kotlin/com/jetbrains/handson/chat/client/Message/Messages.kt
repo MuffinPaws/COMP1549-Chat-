@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client
+package com.jetbrains.handson.chat.client.Message
 
 object Messages {
     val messages = mutableMapOf<Message, Boolean>()
