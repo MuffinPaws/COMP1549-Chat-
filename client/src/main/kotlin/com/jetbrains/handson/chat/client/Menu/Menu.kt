@@ -8,6 +8,7 @@ object Menu{
                 type 'send' to type a new message (Press Enter to send it)
                 type 'history' to fetch messages history
                 type 'members' to list all members
+                type 'listen' to listen to incoming messages
                 Please enter command: 
     """
     private fun print(short:Boolean = true){
