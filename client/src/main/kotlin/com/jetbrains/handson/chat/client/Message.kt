@@ -96,7 +96,6 @@ class ConfigMessageBox(dataB64: String) : MessageBox<String>(dataB64) {
     private val dataParsed = String(Base64.getUrlDecoder().decode(dataB64))
     fun updateMembers() {
         val newClientLis = Json.decodeFromString<List<clientData>>(dataParsed)
-        println(newClientLis.joinToString())//TODO remove
         allClients.listOf.removeAll { true }
         allClients.listOf.addAll(newClientLis)
     }

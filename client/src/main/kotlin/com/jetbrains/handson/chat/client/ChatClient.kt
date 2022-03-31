@@ -55,7 +55,6 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
             try {
                 //TODO change to any data type
                 frame as? Frame.Text ?: continue
-                println(frame.readText()) //TODO remove
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
                 if (Messages.put(message) == true && message.type == ApplicationDataType.PING){
@@ -112,9 +111,10 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
         }
-        val message = readln()
+        val toID = allClients.findMemberID()
+        val input = readln()
         // if input is blank double check
-        if (message.isBlank()){
+        if (input.isBlank()){
             while (true){
                 print("Your message is blank. Are you sure you want to send a blank message? (enter yes or no): ")
                 when (readln().lowercase().first()){
@@ -127,8 +127,8 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         // member can request existing members
         try {
             // send what you typed
-            val messageP = Message(toID = "hdsfg", data = message, type = ApplicationDataType.TEXT)
-            send(Json.encodeToString(messageP))
+            val message = Message(toID = toID, data = input, type = ApplicationDataType.TEXT)
+            send(Json.encodeToString(message))
         } catch (e: Exception) {
             println("Error while sending: " + e.localizedMessage)
             return

@@ -75,13 +75,17 @@ object allClients {
                 client.ID.contains(input,true) or
                 client.IP.contains(input, true)) matchingMembers.add(client)
         }
-        if (matchingMembers.size == 1) return matchingMembers.first().ID
+        if (matchingMembers.size == 1) {
+            println("Matched")
+            printMembers(matchingMembers)
+            return matchingMembers.first().ID
+        }
         if (matchingMembers.isEmpty()) {
             println("There are no members matching you search query. Restarting")
             return findMemberID()
         }
         println("There multiple matches to your search:")
-        println(matchingMembers)
+        printMembers(matchingMembers)
         return findMemberID(matchingMembers)
     }
 }
