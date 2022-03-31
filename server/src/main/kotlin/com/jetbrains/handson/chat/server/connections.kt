@@ -22,4 +22,13 @@ object connections {
             it.session.send(message)
         }
     }
+
+    suspend fun send(message: String, Id:String){
+        for (connection in setOf) {
+            if (connection.clientData.ID == Id){
+                connection.session.send(message)
+                break
+            }
+        }
+    }
 }
