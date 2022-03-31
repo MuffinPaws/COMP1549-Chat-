@@ -38,9 +38,11 @@ fun main(args: Array<String>) {
                 path = "/chat"
             )
             {
+                // launch coroutines for incoming and outgoing messages
                 val messageOutputRoutine = launch { outputMessages() }
                 val userInputRoutine = launch { inputMessages() }
 
+                // join the sending messages coroutine
                 userInputRoutine.join() // Wait for completion; either "exit" or error
                 messageOutputRoutine.cancelAndJoin()
             }
@@ -55,51 +57,59 @@ fun main(args: Array<String>) {
     }
 }
 
-// Double check this part
+// Coroutine for incoming messages
 suspend fun DefaultClientWebSocketSession.outputMessages() {
     try {
         //for each incoming message
         for (frame in incoming) {
             try {
-                //TODO change to any data type
+                // parse incoming frame
                 frame as? Frame.Text ?: continue
                 val message = Json.decodeFromString<Message>(frame.readText())
+                // store message
                 Messages.put(message)
-                // print frame parsed from server
+                // if listening is enabled print status and read message
                 if (operatingParameters.listening) {
                     AllMembers.status()
                     Messages.read()
                 }
-                //message.display()
             } catch (e: Exception) {
+                // log error
                 println("Info while receiving: " + e.localizedMessage)
             }
 
         }
     } catch (e: Exception) {
-        //log error
+        // log error
         println("Info while receiving: " + e.localizedMessage)
     }
 }
 
+// Coroutine for handling user commands (send messages, read messages, get help info and activate listen mode)
 suspend fun DefaultClientWebSocketSession.inputMessages() {
+    // Send to server this clients info
     send(operatingParameters.clientData)
     println("Loading ⏳")
-    //loop to wait for init of all clients list
+    //loop to wait for list of all clients from server
     while (AllMembers.listOfAllMembers.isEmpty()) {
         Thread.sleep(10)
     }
     println("You are connected!")
-    //for each user input
+    //for each user command
     input@ while (true) {
+        // Print status
         AllMembers.status()
+        // When in listening mode await interrupt from user
         if (operatingParameters.listening) readln()
+        // get user command
         val task = Menu.getTask()
+        // lamda for exit message
         val exit = { x: String ->
             println("${x}ting")
             println("Connection closed. Goodbye!")
             exitProcess(0)
         }
+        // do user task
         when (task) {
             Tasks.EXIT -> exit("Exi")
             Tasks.QUIT -> exit("Quit")
@@ -125,6 +135,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
         }
+        // asking to start a conversation private or broadcast
         print("Do you want to send a 'broadcast' or 'private' message: ")
         val messages = when (readln()) {
             "broadcast" -> Message.messageBroadcast()
@@ -134,10 +145,9 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 continue
             }
         }
-        // member can request existing members
+        // Send each message
         messages.forEach {
             try {
-                // send what you typed
                 send(Json.encodeToString(it))
             } catch (e: Exception) {
                 println("Error while sending: " + e.localizedMessage)
