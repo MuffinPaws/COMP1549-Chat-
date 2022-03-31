@@ -44,7 +44,9 @@ object Messages{
     //TODO Filter only text messages
     fun read(isRead : Boolean = false){
         for ((message, read) in messages) {
+            if (message.type != ApplicationDataType.TEXT) continue
             if (read == isRead) message.display()
+            messages[message] = false
         }
     }
 
