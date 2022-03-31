@@ -77,9 +77,8 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     send(operatingParameters.clientData)
     println("Loading ⏳")
     //loop to wait for init of all clients list
-    while (true){
-        Thread.sleep(1000) //TODO check value
-        if (allClients.listOf.isEmpty()) continue else break
+    while (allClients.listOf.isEmpty()){
+        Thread.sleep(10)
     }
     println("You are connected!")
     //for each user input
