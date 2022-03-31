@@ -8,6 +8,7 @@ enum class Tasks{
     HISTORY,
     MEMBERS,
     HELP,
+    LISTEN,
     UNKNOWN;
 
     companion object{

@@ -106,6 +106,10 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
                 allClients.printMembers()
                 continue
             }
+            Tasks.LISTEN -> {
+                listen
+                continue
+            }
             else -> {
                 println("Error parsing task input.🤦 Please try again.")
                 continue
@@ -136,3 +140,4 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
         }
     }
 }
+
