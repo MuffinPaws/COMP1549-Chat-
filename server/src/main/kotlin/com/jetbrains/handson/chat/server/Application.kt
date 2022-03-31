@@ -5,7 +5,10 @@ import com.jetbrains.handson.chat.server.connections.setOf
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
+import io.ktor.util.*
 import io.ktor.websocket.*
+import kotlinx.serialization.EncodeDefault
+import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.time.Duration
@@ -80,6 +83,15 @@ fun setNewCoord() {
         setOf.elementAt(0).isCoord = true
     }
 }
+
+@Serializable
+data class Message(
+    val fromID: String,
+    val toID: String,
+    val data: String,
+    val type: String,
+    @EncodeDefault val time: Long = System.currentTimeMillis()
+)
 
 
 //suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnection: Connection) {
