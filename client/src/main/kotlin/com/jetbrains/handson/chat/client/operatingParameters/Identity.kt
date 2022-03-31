@@ -1,13 +1,13 @@
-package com.jetbrains.handson.chat.client.OperatingParameters
+package com.jetbrains.handson.chat.client.operatingParameters
 
 import java.security.KeyPair
 import java.security.KeyPairGenerator
 import java.security.MessageDigest
 import java.util.*
 
-// TODO better obj name?
+// Singleton object generating and holding the unique ID
 object Identity {
-    val fingerprint: String
+    val ID: String
     val key: KeyPair
 
     init {
@@ -19,6 +19,6 @@ object Identity {
         val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
 
         key = generator.generateKeyPair()
-        fingerprint = toBase64URL(getHash.digest(key.public.encoded))
+        ID = toBase64URL(getHash.digest(key.public.encoded))
     }
 }

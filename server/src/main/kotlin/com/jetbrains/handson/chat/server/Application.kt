@@ -1,13 +1,11 @@
 package com.jetbrains.handson.chat.server
 
-import com.jetbrains.handson.chat.server.connections.getAllClients
-import com.jetbrains.handson.chat.server.connections.setOf
+import com.jetbrains.handson.chat.server.Connections.getAllClients
+import com.jetbrains.handson.chat.server.Connections.setOf
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
-import kotlinx.serialization.EncodeDefault
-import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
 import java.time.Duration
@@ -24,15 +22,15 @@ fun Application.module() {
         maxFrameSize = Long.MAX_VALUE
         masking = false
     }
-    // for all client connection create a KTOR thread
+    // for all client connection create a KTOR routing scope coroutine
     routing {
         webSocket("/chat") {
-            // add connection to set of connections
-            val clientData: clientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
+            // parse client data
+            val clientData: ClientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
+            // create connection 
             val thisConnection = Connection(this, clientData)
+            // add connection to set of connections
             setOf += thisConnection
-            // advise client of the just established connection
-            println(getAllClients()) // TODO remove this
             try {
                 // when user connects log
                 println("Adding ${thisConnection.clientData.name}")
@@ -41,15 +39,18 @@ fun Application.module() {
                     thisConnection.isCoord = true
                 }
                 //send to all clients list of all clients (including new member)
-                connections.broadcast(getAllClients())
+                Connections.broadcast(getAllClients())
+                // for each incoming frame
                 for (frame in incoming) {
                     try {
+                        // check if frame is text
                         frame as? Frame.Text ?: continue
+                        // extract text from frame
                         val receivedData = frame.readText()
+                        // parse message header
                         val receivedMessage = Json.decodeFromString<Message>(receivedData)
-                        // text to be sent to all members
-                        //TODO change to 1 to 1
-                        connections.send(receivedData, receivedMessage.toID)
+                        // send message to recipient
+                        Connections.send(receivedData, receivedMessage.toID)
                     } catch (e: Exception) {
                         println("Received malformed frame: " + e.localizedMessage)
                     }
@@ -59,54 +60,28 @@ fun Application.module() {
             } finally {
                 // when client disconnects, log client leaving
                 println("Removing ${thisConnection.clientData.name}")
-                // remove that client's connection from the connections hashset
+                // remove that client's connection from the connections set
                 setOf -= thisConnection
-                // inform all clients of dismember
-                // if the COORD disconnects, then someone else has to take that role
+                // if the coordinator disconnects then find new coordinator
                 if (setOf.isNotEmpty()) {
                     setNewCoord()
                 }
-                connections.broadcast(getAllClients())
+                // inform all the clients with updates client lists
+                Connections.broadcast(getAllClients())
             }
         }
     }
 }
 
-
+/*
+This function checks the presence of a coordinator in the connections set.
+If there is not, sets that role to the first connection in the set.
+*/
 fun setNewCoord() {
-    /*
-    This function checks the presence of a coordinator in the connections set.
-    If there is not, sets that role to the first connection in the set.
-     */
-    var counter = 0
-    setOf.forEach { connection: Connection -> if (connection.isCoord) counter++ }
-    if (counter == 0) {
+    var counter = false
+    setOf.forEach { connection: Connection -> if (connection.isCoord) counter = true }
+    if (counter) {
         println("Setting ${setOf.elementAt(0).clientData.name} as the new COORD...")
         setOf.elementAt(0).isCoord = true
     }
 }
-
-@Serializable
-data class Message(
-    val fromID: String,
-    val toID: String,
-    val data: String,
-    val type: String,
-    @EncodeDefault val time: Long = System.currentTimeMillis()
-)
-
-
-//suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnection: Connection) {
-//    /*
-//    This function checks if a member has requested the server (by using the /members command)
-//    to get the list of existing members.
-//    */
-//    var listOfExistingMembers = ""
-//    connections.forEach {
-//        listOfExistingMembers += "[name: ${it.clientData.name}, " +
-//                "coord: ${it.isCoord}, id: ciccio99, IP: 000, Port: 000]\n"
-//    }
-//    println("Sending list of existing members to ${thisConnection.clientData.name}...")
-//    thisConnection.session.send(listOfExistingMembers)
-//    thisConnection.session.send("End of list!")
-//}
