@@ -1,12 +1,11 @@
 package com.jetbrains.handson.chat.client.allClientsData
 
-import com.jetbrains.handson.chat.client.OperatingParameters.Identity
-import com.jetbrains.handson.chat.client.operatingParameters
+import com.jetbrains.handson.chat.client.operatingParameters.Identity
 
 private const val MIN_DISPLAY_LENGHTH = 6 //TODO or 4?
 
-object allClients {
-    val listOf = mutableListOf<clientData>()
+object AllClientsList {
+    val listOf = mutableListOf<ClientData>()
     private var fingerprintTruncation = MIN_DISPLAY_LENGHTH
 
     fun updateFingerprintTruncation() {

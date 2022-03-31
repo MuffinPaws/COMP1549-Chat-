@@ -1,6 +1,6 @@
-package com.jetbrains.handson.chat.client.Menu
+package com.jetbrains.handson.chat.client.commandsMenu
 
-object Menu{
+object Menu {
     private const val shortMenu = "For list of all commands enter help. \nPlease enter command: "
     private const val longMenu = """
                 Type 'exit' or 'quit' to close the program. 
@@ -10,17 +10,18 @@ object Menu{
                 type 'members' to list all members
                 Please enter command: 
     """
-    private fun print(short:Boolean = true){
+
+    private fun print(short: Boolean = true) {
         if (short) return print(shortMenu)
         print(longMenu.trimIndent())
     }
 
-    fun getTask(shortMenu:Boolean = true): Tasks {
+    fun getTask(shortMenu: Boolean = true): MenuTasks {
         print(shortMenu)
-        val input = Tasks.findTask(readln())
-        when(input){
-            Tasks.HELP -> return getTask(shortMenu = false)
-            Tasks.UNKNOWN -> {
+        val input = MenuTasks.findTask(readln())
+        when (input) {
+            MenuTasks.HELP -> return getTask(shortMenu = false)
+            MenuTasks.UNKNOWN -> {
                 println("unknown command🥴")
                 return getTask(shortMenu = false)
             }

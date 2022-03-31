@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.OperatingParameters
+package com.jetbrains.handson.chat.client.operatingParameters
 
 import com.github.ajalt.clikt.core.CliktCommand
 import com.github.ajalt.clikt.output.TermUi.echo

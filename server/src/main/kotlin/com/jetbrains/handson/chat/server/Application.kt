@@ -1,7 +1,10 @@
 package com.jetbrains.handson.chat.server
 
-import com.jetbrains.handson.chat.server.connections.getAllClients
-import com.jetbrains.handson.chat.server.connections.setOf
+import com.jetbrains.handson.chat.server.connections.ConnectionsSet.getAllClients
+import com.jetbrains.handson.chat.server.connections.ConnectionsSet.setOf
+import com.jetbrains.handson.chat.server.connections.ClientData
+import com.jetbrains.handson.chat.server.connections.Connection
+import com.jetbrains.handson.chat.server.connections.ConnectionsSet
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
@@ -14,7 +17,7 @@ import java.time.Duration
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
 
 @Suppress("unused")
-fun Application.module() {
+fun Application.module(testing: Boolean = false) {
     // use KTOR websockets
     install(WebSockets) {
         pingPeriod = Duration.ofSeconds(15)
@@ -25,8 +28,8 @@ fun Application.module() {
     // for all client connection create a KTOR thread
     routing {
         webSocket("/chat") {
-            // add connection to set of connections
-            val clientData: clientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
+            // add connection to set of ConnectionsSet
+            val clientData: ClientData = Json.decodeFromString((incoming.receive() as Frame.Text).readText())
             val thisConnection = Connection(this, clientData)
             setOf += thisConnection
             // advise client of the just established connection
@@ -39,7 +42,7 @@ fun Application.module() {
                     thisConnection.isCoord = true
                 }
                 //send to all clients list of all clients (including new member)
-                connections.broadcast(getAllClients())
+                ConnectionsSet.broadcast(getAllClients())
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()
@@ -54,14 +57,14 @@ fun Application.module() {
             } finally {
                 // when client disconnects, log client leaving
                 println("Removing ${thisConnection.clientData.name}")
-                // remove that client's connection from the connections hashset
+                // remove that client's connection from the ConnectionsSet hashset
                 setOf -= thisConnection
                 // inform all clients of dismember
                 // if the COORD disconnects, then someone else has to take that role
                 if (setOf.isNotEmpty()) {
                     setNewCoord()
                 }
-                connections.broadcast(getAllClients())
+                ConnectionsSet.broadcast(getAllClients())
             }
         }
     }
@@ -70,7 +73,7 @@ fun Application.module() {
 
 fun setNewCoord() {
     /*
-    This function checks the presence of a coordinator in the connections set.
+    This function checks the presence of a coordinator in the ConnectionsSet set.
     If there is not, sets that role to the first connection in the set.
      */
     var counter = 0
@@ -82,17 +85,17 @@ fun setNewCoord() {
 }
 
 
-//suspend fun getExisistingMembers(connections: MutableSet<Connection>, thisConnection: Connection) {
+//suspend fun getExisistingMembers(ConnectionsSet: MutableSet<Connection>, thisConnection: Connection) {
 //    /*
 //    This function checks if a member has requested the server (by using the /members command)
 //    to get the list of existing members.
 //    */
 //    var listOfExistingMembers = ""
-//    connections.forEach {
-//        listOfExistingMembers += "[name: ${it.clientData.name}, " +
+//    ConnectionsSet.forEach {
+//        listOfExistingMembers += "[name: ${it.ClientData.name}, " +
 //                "coord: ${it.isCoord}, id: ciccio99, IP: 000, Port: 000]\n"
 //    }
-//    println("Sending list of existing members to ${thisConnection.clientData.name}...")
+//    println("Sending list of existing members to ${thisConnection.ClientData.name}...")
 //    thisConnection.session.send(listOfExistingMembers)
 //    thisConnection.session.send("End of list!")
 //}

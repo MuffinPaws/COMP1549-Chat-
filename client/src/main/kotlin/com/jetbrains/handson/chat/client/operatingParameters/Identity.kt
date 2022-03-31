@@ -1,4 +1,4 @@
-package com.jetbrains.handson.chat.client.OperatingParameters
+package com.jetbrains.handson.chat.client.operatingParameters
 
 import java.security.KeyPair
 import java.security.KeyPairGenerator

@@ -1,8 +1,8 @@
 package com.jetbrains.handson.chat.client
 
-import com.jetbrains.handson.chat.client.OperatingParameters.Identity
-import com.jetbrains.handson.chat.client.allClientsData.allClients
-import com.jetbrains.handson.chat.client.allClientsData.clientData
+import com.jetbrains.handson.chat.client.operatingParameters.Identity
+import com.jetbrains.handson.chat.client.allClientsData.AllClientsList
+import com.jetbrains.handson.chat.client.allClientsData.ClientData
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
@@ -95,9 +95,9 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 class ConfigMessageBox(dataB64: String) : MessageBox<String>(dataB64) {
     private val dataParsed = String(Base64.getUrlDecoder().decode(dataB64))
     fun updateMembers() {
-        val newClientLis = Json.decodeFromString<List<clientData>>(dataParsed)
+        val newClientLis = Json.decodeFromString<List<ClientData>>(dataParsed)
         println(newClientLis.joinToString())//TODO remove
-        allClients.listOf.removeAll { true }
-        allClients.listOf.addAll(newClientLis)
+        AllClientsList.listOf.removeAll { true }
+        AllClientsList.listOf.addAll(newClientLis)
     }
 }

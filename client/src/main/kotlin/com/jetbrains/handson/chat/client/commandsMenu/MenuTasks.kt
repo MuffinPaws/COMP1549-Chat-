@@ -1,6 +1,6 @@
-package com.jetbrains.handson.chat.client.Menu
+package com.jetbrains.handson.chat.client.commandsMenu
 
-enum class Tasks{
+enum class MenuTasks{
     EXIT,
     QUIT,
     SEND,
@@ -11,7 +11,7 @@ enum class Tasks{
     UNKNOWN;
 
     companion object{
-        fun findTask(input:String): Tasks {
+        fun findTask(input:String): MenuTasks {
             for (enum in values()){
                 if (enum.name.equals(input, true)) return enum
             }

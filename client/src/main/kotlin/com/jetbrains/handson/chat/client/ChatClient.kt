@@ -1,9 +1,9 @@
 package com.jetbrains.handson.chat.client
 
-import com.jetbrains.handson.chat.client.Menu.Menu
-import com.jetbrains.handson.chat.client.Menu.Tasks
-import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
-import com.jetbrains.handson.chat.client.allClientsData.allClients
+import com.jetbrains.handson.chat.client.commandsMenu.Menu
+import com.jetbrains.handson.chat.client.commandsMenu.MenuTasks
+import com.jetbrains.handson.chat.client.operatingParameters.OperatingParameters
+import com.jetbrains.handson.chat.client.allClientsData.AllClientsList
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
@@ -79,12 +79,12 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     //loop to wait for init of all clients list
     while (true){
         Thread.sleep(1000) //TODO check value
-        if (allClients.listOf.isEmpty()) continue else break
+        if (AllClientsList.listOf.isEmpty()) continue else break
     }
     println("You are connected!")
     //for each user input
     while (true) {
-        allClients.Status()
+        AllClientsList.Status()
         val task = Menu.getTask()
         val exit = { x: String ->
             println("${x}ting")
@@ -92,19 +92,19 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
             exitProcess(0)
         }
         when (task){
-            Tasks.EXIT -> exit("Exi")
-            Tasks.QUIT -> exit("Quit")
-            Tasks.SEND -> print("Please type your massage: ")
-            Tasks.READ -> {
+            MenuTasks.EXIT -> exit("Exi")
+            MenuTasks.QUIT -> exit("Quit")
+            MenuTasks.SEND -> print("Please type your massage: ")
+            MenuTasks.READ -> {
                 Messages.read()
                 continue
             }
-            Tasks.HISTORY -> {
+            MenuTasks.HISTORY -> {
                 Messages.read(true)
                 continue
             }
-            Tasks.MEMBERS -> {
-                allClients.printMembers()
+            MenuTasks.MEMBERS -> {
+                AllClientsList.printMembers()
                 continue
             }
             else -> {

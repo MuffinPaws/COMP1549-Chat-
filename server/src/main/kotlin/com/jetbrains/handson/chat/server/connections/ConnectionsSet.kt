@@ -1,15 +1,15 @@
-package com.jetbrains.handson.chat.server
+package com.jetbrains.handson.chat.server.connections
 
 import io.ktor.http.cio.websocket.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.*
 
-object connections {
-    // set of all client connections
+object ConnectionsSet {
+    // set of all client ConnectionsSet
     val setOf = Collections.synchronizedSet<Connection?>(LinkedHashSet())
     fun getAllClients(): String {
-        val listOfClients = mutableListOf<clientData>()
+        val listOfClients = mutableListOf<ClientData>()
         setOf.forEach { listOfClients.add(it.clientData) }
         val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
         return """
