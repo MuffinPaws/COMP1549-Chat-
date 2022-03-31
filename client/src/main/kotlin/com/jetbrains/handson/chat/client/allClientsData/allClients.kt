@@ -5,15 +5,15 @@ import com.jetbrains.handson.chat.client.OperatingParameters.Identity
 object allClients {
     val listOf = mutableListOf<clientData>()
     fun Status(): Unit {
-        var isCoord = ""
+        var isCoord = "."
         for (client in listOf){
             if (client.ID == Identity.fingerprint){
                 if (client.isCoord){
-                    isCoord = " You are the coordinator my friend! 💏"
+                    isCoord = "and you are the coordinator my friend! 💏"
                 }
                 break
             }
         }
-        print("There are ${listOf.size} users here.$isCoord")
+        print("There are ${listOf.size} users here$isCoord")
     }
 }
