@@ -130,7 +130,17 @@ enum class tasks{
     READ,
     HISTORY,
     MEMBERS,
-    HELP;
+    HELP,
+    UNKOWN;
+
+    companion object{
+        fun getTaskq(input:String):tasks{
+            for (enum in values()){
+                if (enum.name.equals(input, true)) return enum
+            }
+            return UNKOWN
+        }
+    }
 }
 
 object menu{
@@ -143,10 +153,13 @@ object menu{
                 type 'members' to list all members
                 Please enter command: 
     """
-    fun print(short:Boolean = true){
+    private fun print(short:Boolean = true){
         if (short) return print(shortMenu)
         print(longMenu.trimIndent())
     }
 
+    fun getTask(shortMenu:Boolean = true){
+        print(shortMenu)
 
+    }
 }
