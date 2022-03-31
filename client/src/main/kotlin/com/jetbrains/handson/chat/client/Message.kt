@@ -20,9 +20,8 @@ data class Message(
     @EncodeDefault val time: Long = System.currentTimeMillis()
 ) {
     fun display() = when (type) {
-        ApplicationDataType.TEXT -> TextMessageBox(data).display(toID, time)
+        ApplicationDataType.TEXT -> TextMessageBox(data).display(fromID, time)
         ApplicationDataType.FILE -> println() //TODO impliment or remove
-        ApplicationDataType.PING -> println()
         ApplicationDataType.CONFIG -> ConfigMessageBox(data).updateMembers()
     }
 
@@ -72,10 +71,6 @@ object Messages {
 
     fun put(message: Message, read: Boolean = false): Boolean? {
         //TODO filter config and ping
-        if (message.type == ApplicationDataType.PING) {
-            messages.put(message, read)
-            return true
-        }
         if (message.type == ApplicationDataType.CONFIG) {
             message.display()
             return false
@@ -97,14 +92,14 @@ object Messages {
 
 //List of all possible message type the app can receive
 enum class ApplicationDataType {
-    TEXT, FILE, PING, CONFIG;
+    TEXT, FILE, CONFIG;
 
     companion object {
         fun findDataType(name: String): ApplicationDataType {
             for (enum in values()) {
                 if (enum.name.equals(name, true)) return enum
             }
-            return PING
+            return TEXT
         }
     }
 }
@@ -135,10 +130,6 @@ class TextMessageBox(data: String) : MessageBox<String>(data) {
 }
 
 class FileMessageBox(data: String) : MessageBox<String>(data) {
-
-}
-
-class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 
 }
 
