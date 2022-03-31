@@ -134,7 +134,7 @@ enum class tasks{
     UNKOWN;
 
     companion object{
-        fun getTaskq(input:String):tasks{
+        fun findTask(input:String):tasks{
             for (enum in values()){
                 if (enum.name.equals(input, true)) return enum
             }
@@ -160,6 +160,6 @@ object menu{
 
     fun getTask(shortMenu:Boolean = true){
         print(shortMenu)
-
+        val input = tasks.findTask(readln())
     }
 }
