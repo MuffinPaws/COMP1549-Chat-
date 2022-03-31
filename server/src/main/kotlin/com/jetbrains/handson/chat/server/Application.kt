@@ -39,9 +39,7 @@ fun Application.module() {
                     thisConnection.isCoord = true
                 }
                 //send to all clients list of all clients (including new member)
-                setOf.forEach {
-                    it.session.send(getAllClients())
-                }
+                connections.broadcast(getAllClients())
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
                     val receivedText = frame.readText()
@@ -59,16 +57,11 @@ fun Application.module() {
                 // remove that client's connection from the connections hashset
                 setOf -= thisConnection
                 // inform all clients of dismember
-                setOf.forEach {
-                    it.session.send(getAllClients())
-                }
                 // if the COORD disconnects, then someone else has to take that role
                 if (setOf.isNotEmpty()) {
                     setNewCoord()
-                    setOf.forEach {
-                        it.session.send(getAllClients())
-                    }
                 }
+                connections.broadcast(getAllClients())
             }
         }
     }

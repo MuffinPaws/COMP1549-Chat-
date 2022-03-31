@@ -1,5 +1,6 @@
 package com.jetbrains.handson.chat.server
 
+import io.ktor.http.cio.websocket.*
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.*
@@ -14,5 +15,11 @@ object connections {
         return """
             {"fromID":"server","toID":"init","data":"${toBase64URL(Json.encodeToString(listOfClients.toList()).toByteArray())}","type":"CONFIG","time":${System.currentTimeMillis()}}
         """.trimIndent()
+    }
+
+    suspend fun broadcast(message: String): Unit {
+        setOf.forEach {
+            it.session.send(message)
+        }
     }
 }
