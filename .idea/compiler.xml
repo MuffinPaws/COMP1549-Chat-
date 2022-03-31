@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="CompilerConfiguration">
+    <bytecodeTargetLevel>
+      <module name="chat-app-websockets" target="11" />
+      <module name="chat-app-websockets.main" target="11" />
+      <module name="chat-app-websockets.test" target="11" />
+      <module name="client" target="11" />
+      <module name="client.main" target="11" />
+      <module name="client.test" target="11" />
+    </bytecodeTargetLevel>
+  </component>
+</project>

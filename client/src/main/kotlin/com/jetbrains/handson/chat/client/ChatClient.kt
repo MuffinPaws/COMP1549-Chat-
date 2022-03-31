@@ -1,6 +1,7 @@
 package com.jetbrains.handson.chat.client
 
 import com.jetbrains.handson.chat.client.OperatingParameters.OperatingParameters
+import com.jetbrains.handson.chat.client.allClientsData.allClients
 import io.ktor.client.*
 import io.ktor.client.features.websocket.*
 import io.ktor.http.*
@@ -8,9 +9,9 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.serialization.json.Json
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
+import kotlinx.serialization.json.Json
 import kotlin.system.exitProcess
 
 val operatingParameters = OperatingParameters()
@@ -41,7 +42,7 @@ fun main(args: Array<String>) {
     }
     //release system resources
     client.close()
-    println("Connection closed. Goodbye!")
+    println("Connection closed. 😿 Goodbye! 👋")
 }
 
 // Double check this part
@@ -52,9 +53,13 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
             try {
                 //TODO change to any data type
                 frame as? Frame.Text ?: continue
+                println(frame.readText()) //TODO remove
                 val message = Json.decodeFromString<Message>(frame.readText())
                 // print frame parsed from server
-                message.display()
+                if (Messages.put(message) == true && message.type == ApplicationDataType.PING){
+                    //TODO ping reply
+                }
+                //message.display()
             } catch (e: Exception) {
                 println("Info while receiving: " + e.localizedMessage)
             }
@@ -67,31 +72,53 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
 }
 
 suspend fun DefaultClientWebSocketSession.inputMessages() {
-    //TODO Init client config message and serialize
     send(operatingParameters.clientData)
+    println("Loading ⏳")
+    //TODO fix waiting for server list
+//    while (allClients.listOf.size==0){
+//        //loop to wait for init of all clients list
+//    }
+    println("You are connected!")
+    //for each user input
     while (true) {
-        //for each user input
-        //TODO change
-        val message = readLine()
-        if (message.isNullOrBlank()) continue
-        if (message.equals("exit", true)) exitProcess(0)
-        if (message.equals("quit", true)) {
+        allClients.Status()
+        //TODO change move to short menu with long menu for help
+        println(
+                """
+                Type 'exit' or 'quit' to close the program. 
+                type 'read' to read messages
+                type 'send' to type a new message (Press Enter to send it)
+                type 'history' to fetch messages history
+                type 'members' to list all members
+            """.trimIndent()
+        )
+        val exit = { x: String ->
+            println("${x}ting")
             println("Connection closed. Goodbye!")
             exitProcess(0)
         }
-        // member can request existing members
-        if (message.equals("/members")) {
-            println("Returning existing members from server's set...")
-            send("/members")
-        } else {
-            try {
-                // send what you typed
-                val messageP = Message(toID = "hdsfg", data = message, type = AplicationDataType.TEXT)
-                send(Json.encodeToString(messageP))
-            } catch (e: Exception) {
-                println("Error while sending: " + e.localizedMessage)
-                return
+        when (readln()) {
+            "exit" -> exit("Exi")
+            "quit" -> exit("Quit")
+            "read" -> Messages.read()
+            "history" -> Messages.read(true)
+            "members" -> continue // TODO implement
+            "send" -> print("Please type your massage: ")
+            else -> {
+                println("unknown command🥴")
+                continue
             }
+        }
+        val message = readln()
+        if (message.isBlank()) continue
+        // member can request existing members
+        try {
+            // send what you typed
+            val messageP = Message(toID = "hdsfg", data = message, type = ApplicationDataType.TEXT)
+            send(Json.encodeToString(messageP))
+        } catch (e: Exception) {
+            println("Error while sending: " + e.localizedMessage)
+            return
         }
     }
 }
