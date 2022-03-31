@@ -11,7 +11,6 @@ import io.ktor.http.cio.websocket.*
 import kotlinx.coroutines.cancelAndJoin
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import kotlinx.coroutines.selects.select
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
@@ -27,25 +26,31 @@ fun main(args: Array<String>) {
         install(WebSockets)
     }
     //run blocking tread/container/instance (nothing else at the same time) TODO check if comment correct
-    runBlocking {
-        //create client websocket instance
-        client.webSocket(
+    try {
+        runBlocking {
+            //create client websocket instance
+            client.webSocket(
                 method = HttpMethod.Get,
                 host = operatingParameters.serverIP,
                 port = operatingParameters.serverPort,
                 path = "/chat"
-        )
-        {
-            val messageOutputRoutine = launch { outputMessages() }
-            val userInputRoutine = launch { inputMessages() }
+            )
+            {
+                val messageOutputRoutine = launch { outputMessages() }
+                val userInputRoutine = launch { inputMessages() }
 
-            userInputRoutine.join() // Wait for completion; either "exit" or error
-            messageOutputRoutine.cancelAndJoin()
+                userInputRoutine.join() // Wait for completion; either "exit" or error
+                messageOutputRoutine.cancelAndJoin()
+            }
         }
+    } catch (e: Exception) {
+        println("Something went wrong when connecting with server. Maybe you or the server is offline.")
+        println("Details of issue:\n" + e.localizedMessage)
+    } finally {
+        //release system resources
+        client.close()
+        println("Connection closed. 😿 Goodbye! 👋")
     }
-    //release system resources
-    client.close()
-    println("Connection closed. 😿 Goodbye! 👋")
 }
 
 // Double check this part
@@ -59,7 +64,7 @@ suspend fun DefaultClientWebSocketSession.outputMessages() {
                 val message = Json.decodeFromString<Message>(frame.readText())
                 Messages.put(message)
                 // print frame parsed from server
-                if (operatingParameters.listening){
+                if (operatingParameters.listening) {
                     allClients.Status()
                     Messages.read()
                 }
@@ -79,12 +84,12 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
     send(operatingParameters.clientData)
     println("Loading ⏳")
     //loop to wait for init of all clients list
-    while (allClients.listOf.isEmpty()){
+    while (allClients.listOf.isEmpty()) {
         Thread.sleep(10)
     }
     println("You are connected!")
     //for each user input
-    input@while (true) {
+    input@ while (true) {
         allClients.Status()
         if (operatingParameters.listening) readln()
         val task = Menu.getTask()
@@ -93,7 +98,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
             println("Connection closed. Goodbye!")
             exitProcess(0)
         }
-        when (task){
+        when (task) {
             Tasks.EXIT -> exit("Exi")
             Tasks.QUIT -> exit("Quit")
             Tasks.SEND -> println("Loading ⏳")
@@ -119,7 +124,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
             }
         }
         print("Do you want to send a 'broadcast' or 'private' message: ")
-        val messages = when(readln()){
+        val messages = when (readln()) {
             "broadcast" -> Message.messageBroadcast()
             "private" -> Message.message1to1()
             else -> {
