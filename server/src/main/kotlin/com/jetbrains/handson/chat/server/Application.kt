@@ -21,9 +21,9 @@ object connections{
     fun getAllClients(): String {
         val listOfClients = mutableListOf<clientData>()
         setOf.forEach { listOfClients.add(it.clientData) }
-        Json.encodeToString(listOfClients)
+        val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
         return """
-            {"fromID":"server","toID":"init","data":"${Json.encodeToString(listOfClients)}","type":"CONFIG","time":${System.currentTimeMillis()}}
+            {"fromID":"server","toID":"init","data":"${toBase64URL(Json.encodeToString(listOfClients.toList()).toByteArray())}","type":"CONFIG","time":${System.currentTimeMillis()}}
         """.trimIndent()
     }
 }
