@@ -13,8 +13,18 @@ object connections {
         setOf.forEach { listOfClients.add(it.clientData) }
         val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
         //TODO use Message data class to wrap
+        val data = toBase64URL(Json.encodeToString(listOfClients.toList()).toByteArray())
+        val message = Json.encodeToString(
+            Message(
+                "server", "init", data, "CONFIG"
+            )
+        )
         return """
-            {"fromID":"server","toID":"init","data":"${toBase64URL(Json.encodeToString(listOfClients.toList()).toByteArray())}","type":"CONFIG","time":${System.currentTimeMillis()}}
+            {"fromID":"server","toID":"init","data":"${
+            toBase64URL(
+                Json.encodeToString(listOfClients.toList()).toByteArray()
+            )
+        }","type":"CONFIG","time":${System.currentTimeMillis()}}
         """.trimIndent()
     }
 
@@ -24,9 +34,9 @@ object connections {
         }
     }
 
-    suspend fun send(message: String, Id:String){
+    suspend fun send(message: String, Id: String) {
         for (connection in setOf) {
-            if (connection.clientData.ID == Id){
+            if (connection.clientData.ID == Id) {
                 connection.session.send(message)
                 break
             }
