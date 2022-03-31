@@ -1,6 +1,7 @@
 package com.jetbrains.handson.chat.client.allClientsData
 
 import com.jetbrains.handson.chat.client.OperatingParameters.Identity
+import com.jetbrains.handson.chat.client.operatingParameters
 
 private const val MIN_DISPLAY_LENGHTH = 6 //TODO or 4?
 
@@ -22,6 +23,7 @@ object allClients {
                 used.add(subString)
             }
             fingerprintTruncation = index
+            break
         }
     }
 
@@ -47,9 +49,20 @@ object allClients {
         return ""
     }
 
-    fun getMembers() {
+    fun printMembers() {
+        updateFingerprintTruncation()
         listOf.forEach {
-            println("Memebr")
+            if (it.ID == Identity.fingerprint) println("This is you:")
+            println(
+                """
+                Member name ${it.name}
+                ${it.name}s fingerprint ${it.ID.substring(0, fingerprintTruncation)}
+                ${it.name}s shared IP address and port ${it.IP}:${it.port}
+                ${it.name} is ${if (!it.isCoord) "not " else ""}the coordinator
+            """.trimIndent()
+            )
+            println()
         }
+        println("End of list of members.")
     }
 }
