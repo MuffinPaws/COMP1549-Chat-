@@ -1,7 +1,6 @@
-package com.jetbrains.handson.chat.client
+package com.jetbrains.handson.chat.client.Message
 
-//TODO fix comment bellow
-// abstract class for providing a framework for storing T data
+// abstract class for providing a framework for storing Any data (generic)
 abstract class MessageBox<T>(t: T) {
     val data = t
     open fun display() {
