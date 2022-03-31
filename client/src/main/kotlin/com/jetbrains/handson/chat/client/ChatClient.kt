@@ -105,7 +105,7 @@ suspend fun DefaultClientWebSocketSession.inputMessages() {
             "members" -> continue // TODO implement
             "send" -> print("Please type your massage: ")
             else -> {
-                println("unknown command🥴")
+                println("")
                 continue
             }
         }
@@ -158,8 +158,16 @@ object menu{
         print(longMenu.trimIndent())
     }
 
-    fun getTask(shortMenu:Boolean = true){
+    fun getTask(shortMenu:Boolean = true): tasks {
         print(shortMenu)
         val input = tasks.findTask(readln())
+        when(input){
+            tasks.HELP -> return getTask(shortMenu = false)
+            tasks.UNKOWN -> {
+                println("unknown command🥴")
+                return getTask(shortMenu = false)
+            }
+            else -> return input
+        }
     }
 }
