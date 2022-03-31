@@ -7,15 +7,16 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
-import java.util.Base64
+import java.util.*
 
 @Serializable
 data class Message(
-        @EncodeDefault val fromID: String = Identity.fingerprint,
-        val toID: String,
-        val data: String,
-        val type: ApplicationDataType,
-        @EncodeDefault val time: Long = System.currentTimeMillis()) {
+    @EncodeDefault val fromID: String = Identity.fingerprint,
+    val toID: String,
+    val data: String,
+    val type: ApplicationDataType,
+    @EncodeDefault val time: Long = System.currentTimeMillis()
+) {
     fun display() = when (type) {
         ApplicationDataType.TEXT -> TextMessageBox(data).display()
         ApplicationDataType.FILE -> println() //TODO impliment or remove
@@ -25,26 +26,27 @@ data class Message(
 }
 
 
-
-object Messages{
+object Messages {
     val messages = mutableMapOf<Message, Boolean>()
 
     fun put(message: Message, read: Boolean = false): Boolean? {
         //TODO filter config and ping
-        if (message.type == ApplicationDataType.PING){
+        if (message.type == ApplicationDataType.PING) {
             messages.put(message, read)
             return true
         }
-        if (message.type == ApplicationDataType.CONFIG){
+        if (message.type == ApplicationDataType.CONFIG) {
             message.display()
             return false
         }
         return messages.put(message, read)
     }
-    //TODO Filter only text messages
-    fun read(isRead : Boolean = false){
+
+    fun read(isRead: Boolean = false) {
         for ((message, read) in messages) {
+            if (message.type != ApplicationDataType.TEXT) continue
             if (read == isRead) message.display()
+            messages[message] = true
         }
     }
 
@@ -92,7 +94,7 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 
 class ConfigMessageBox(dataB64: String) : MessageBox<String>(dataB64) {
     private val dataParsed = String(Base64.getUrlDecoder().decode(dataB64))
-    fun updateMembers(){
+    fun updateMembers() {
         val newClientLis = Json.decodeFromString<List<clientData>>(dataParsed)
         println(newClientLis.joinToString())//TODO remove
         allClients.listOf.removeAll { true }
