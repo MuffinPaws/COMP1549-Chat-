@@ -49,9 +49,9 @@ object allClients {
         return ""
     }
 
-    fun printMembers() {
+    fun printMembers(listOfMembers: MutableList<clientData> = listOf) {
         updateFingerprintTruncation()
-        listOf.forEach {
+        listOfMembers.forEach {
             if (it.ID == Identity.fingerprint) println("This is you:")
             println(
                 """
@@ -64,5 +64,24 @@ object allClients {
             println()
         }
         println("End of list of members.")
+    }
+
+    fun findMemberID(listOfMembers: MutableList<clientData> = listOf):String{
+        val matchingMembers = mutableListOf<clientData>()
+        print("Please enter the member you wish to message.\nYou can enter their (partial or full) name, fingerprint or ip address: ")
+        val input = readln()
+        for (client in listOfMembers){
+            if (client.name.contains(input, true) or
+                client.ID.contains(input,true) or
+                client.IP.contains(input, true)) matchingMembers.add(client)
+        }
+        if (matchingMembers.size == 1) return matchingMembers.first().ID
+        if (matchingMembers.isEmpty()) {
+            println("There are no members matching you search query. Restarting")
+            return findMemberID()
+        }
+        println("There multiple matches to your search:")
+        println(matchingMembers)
+        return findMemberID(matchingMembers)
     }
 }
