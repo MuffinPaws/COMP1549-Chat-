@@ -3,7 +3,7 @@ package com.jetbrains.handson.chat.client.allClientsData
 import com.jetbrains.handson.chat.client.OperatingParameters.Identity
 import com.jetbrains.handson.chat.client.operatingParameters
 
-private const val MIN_DISPLAY_LENGHTH = 6 //TODO or 4?
+private const val MIN_DISPLAY_LENGHTH = 5
 
 object allClients {
     val listOf = mutableListOf<clientData>()
