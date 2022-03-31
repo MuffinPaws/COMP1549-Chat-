@@ -7,26 +7,12 @@ import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
 import io.ktor.websocket.*
 import kotlinx.serialization.decodeFromString
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.time.Duration
 import java.util.*
 
 // args are collected from HOCON and passed to Netty server
 fun main(args: Array<String>): Unit = io.ktor.server.netty.EngineMain.main(args)
-
-object connections {
-    // set of all client connections
-    val setOf = Collections.synchronizedSet<Connection?>(LinkedHashSet())
-    fun getAllClients(): String {
-        val listOfClients = mutableListOf<clientData>()
-        setOf.forEach { listOfClients.add(it.clientData) }
-        val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
-        return """
-            {"fromID":"server","toID":"init","data":"${toBase64URL(Json.encodeToString(listOfClients.toList()).toByteArray())}","type":"CONFIG","time":${System.currentTimeMillis()}}
-        """.trimIndent()
-    }
-}
 
 @Suppress("unused")
 fun Application.module() {
