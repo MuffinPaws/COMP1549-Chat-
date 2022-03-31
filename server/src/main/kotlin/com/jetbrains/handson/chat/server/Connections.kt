@@ -5,7 +5,7 @@ import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.util.*
 
-object connections {
+object Connections {
     // set of all client connections
     val setOf = Collections.synchronizedSet<Connection?>(LinkedHashSet())
     fun getAllClients(): String {
@@ -14,21 +14,10 @@ object connections {
         val toBase64URL = Base64.getUrlEncoder().withoutPadding()::encodeToString
         //TODO use Message data class to wrap
         val data = toBase64URL(Json.encodeToString(listOfClients.toList()).toByteArray())
-        val message = Json.encodeToString(
-            Message(
-                "server", "init", data, "CONFIG"
-            )
-        )
-        return """
-            {"fromID":"server","toID":"init","data":"${
-            toBase64URL(
-                Json.encodeToString(listOfClients.toList()).toByteArray()
-            )
-        }","type":"CONFIG","time":${System.currentTimeMillis()}}
-        """.trimIndent()
+        return Json.encodeToString(Message("server", "init", data, "CONFIG"))
     }
 
-    suspend fun broadcast(message: String): Unit {
+    suspend fun broadcast(message: String) {
         setOf.forEach {
             it.session.send(message)
         }

@@ -1,7 +1,7 @@
 package com.jetbrains.handson.chat.server
 
-import com.jetbrains.handson.chat.server.connections.getAllClients
-import com.jetbrains.handson.chat.server.connections.setOf
+import com.jetbrains.handson.chat.server.Connections.getAllClients
+import com.jetbrains.handson.chat.server.Connections.setOf
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
@@ -39,7 +39,7 @@ fun Application.module() {
                     thisConnection.isCoord = true
                 }
                 //send to all clients list of all clients (including new member)
-                connections.broadcast(getAllClients())
+                Connections.broadcast(getAllClients())
                 for (frame in incoming) {
                     try {
                         frame as? Frame.Text ?: continue
@@ -47,7 +47,7 @@ fun Application.module() {
                         val receivedMessage = Json.decodeFromString<Message>(receivedData)
                         // text to be sent to all members
                         //TODO change to 1 to 1
-                        connections.send(receivedData, receivedMessage.toID)
+                        Connections.send(receivedData, receivedMessage.toID)
                     } catch (e: Exception) {
                         println("Received malformed frame: " + e.localizedMessage)
                     }
@@ -64,7 +64,7 @@ fun Application.module() {
                 if (setOf.isNotEmpty()) {
                     setNewCoord()
                 }
-                connections.broadcast(getAllClients())
+                Connections.broadcast(getAllClients())
             }
         }
     }
