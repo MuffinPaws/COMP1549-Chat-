@@ -7,6 +7,7 @@ import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
 import kotlinx.serialization.decodeFromString
 import kotlinx.serialization.json.Json
+import java.util.Base64
 
 @Serializable
 data class Message(
@@ -28,7 +29,10 @@ data class Message(
 object Messages{
     val messages = mutableMapOf<Message, Boolean>()
 
-    fun put(message: Message, read: Boolean = false): Boolean? = messages.put(message, read)
+    fun put(message: Message, read: Boolean = false): Boolean? {
+        //TODO filter config and ping
+        return messages.put(message, read)
+    }
     //TODO Filter only text messages
     fun read(isRead : Boolean = false){
         for ((message, read) in messages) {
@@ -77,10 +81,12 @@ class PingMessageBox(ID: Int) : MessageBox<Int>(ID) {
 
 }
 
-class ConfigMessageBox(data: String) : MessageBox<String>(data) {
+class ConfigMessageBox(dataB64: String) : MessageBox<String>(dataB64) {
     //TODO add detect if coord now and show user "You are the coordinator my friend!"
+    private val dataParsed = Base64.getUrlDecoder().decode(data).toString()
     fun updateMembers(){
-        val newClientLis = Json.decodeFromString<List<clientData>>(data)
+        val newClientLis = Json.decodeFromString<List<clientData>>(dataParsed)
+        println(newClientLis.joinToString())//TODO remove
         allClients.listOf.removeAll { true }
         allClients.listOf.addAll(newClientLis)
     }
