@@ -44,7 +44,7 @@ data class Message(
 
         private fun getInput(): String {
             input@ while (true) {
-                print("Please type your massage: ")
+                print("Please type your message: ")
                 val input = readln()
                 // if input is blank double check
                 if (input.isBlank()) {
