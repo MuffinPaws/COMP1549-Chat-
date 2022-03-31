@@ -5,7 +5,6 @@ import com.jetbrains.handson.chat.server.connections.setOf
 import io.ktor.application.*
 import io.ktor.http.cio.websocket.*
 import io.ktor.routing.*
-import io.ktor.util.*
 import io.ktor.websocket.*
 import kotlinx.serialization.EncodeDefault
 import kotlinx.serialization.Serializable
@@ -45,11 +44,11 @@ fun Application.module() {
                 connections.broadcast(getAllClients())
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
-                    val receivedText = frame.readText()
+                    val receivedMessage = frame.readText()
                     // text to be sent to all members
                     //TODO change to 1 to 1
                     setOf.forEach {
-                        it.session.send(receivedText)
+                        it.session.send(receivedMessage)
                     }
                 }
             } catch (e: Exception) {
