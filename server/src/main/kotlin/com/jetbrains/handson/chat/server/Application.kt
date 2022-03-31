@@ -40,6 +40,7 @@ fun Application.module() {
                 }
                 //init clilt with list of all memebers
                 send(getAllClients())
+                //TODO also let every one else know
 
                 for (frame in incoming) {
                     frame as? Frame.Text ?: continue
