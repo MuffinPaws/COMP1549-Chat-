@@ -10,7 +10,7 @@ internal class ApplicationKtTest {
 
     @Test
     fun testApplicationThatShouldPass() {
-        withTestApplication({ module(testing = true) }) {
+        withTestApplication({ module() }) {
             handleRequest(HttpMethod.Get, "/chat").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals("Hello, world!", response.content)
@@ -20,7 +20,7 @@ internal class ApplicationKtTest {
 
     @Test
     fun testApplicationThatShouldFail() {
-        withTestApplication({ module(testing = true) }) {
+        withTestApplication({ module() }) {
             handleRequest(HttpMethod.Get, "/chat").apply {
                 assertEquals(HttpStatusCode.OK, response.status())
                 assertEquals("Hello world!", response.content)
